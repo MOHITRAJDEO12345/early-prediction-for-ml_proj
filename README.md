@@ -1,3 +1,24 @@
+📦 personalized-health-system  
+ ┣ 📂 backend                # FastAPI backend  
+ ┃ ┣ 📂 models              # Database models  
+ ┃ ┣ 📂 routes              # API routes  
+ ┃ ┣ 📂 services            # Business logic  
+ ┃ ┣ 📜 main.py             # FastAPI entry point  
+ ┃ ┣ 📜 config.py           # Configurations (DB, API keys)  
+ ┃ ┗ 📜 requirements.txt    # Backend dependencies  
+ ┣ 📂 frontend               # Streamlit frontend  
+ ┃ ┣ 📜 app.py              # Main Streamlit UI  
+ ┃ ┗ 📜 requirements.txt    # Frontend dependencies  
+ ┣ 📂 docker                # Docker-related files  
+ ┃ ┣ 📜 Dockerfile.backend  # Backend Dockerfile  
+ ┃ ┣ 📜 Dockerfile.frontend # Frontend Dockerfile  
+ ┃ ┗ 📜 docker-compose.yml  # Docker Compose config  
+ ┣ 📜 .env                   # Environment variables  
+ ┣ 📜 README.md              # Project documentation  
+ ┗ 📜 .gitignore             # Ignore unnecessary files  
+
+
+
 # Personalized Health & Wellness Recommendation System
 
 ## 🚀 Project Overview

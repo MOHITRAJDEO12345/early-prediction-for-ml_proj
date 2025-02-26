@@ -395,10 +395,10 @@ if selected == 'Chat with us':
     # load_dotenv()
 
     # Get the Gemini API key
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        st.error("❌ API Key not found! Please check your .env file.")
-        st.stop()
+    # api_key = os.getenv("GEMINI_API_KEY")
+    # if not api_key:
+    #     st.error("❌ API Key not found! Please check your .env file.")
+    #     st.stop()
 
     # Configure Gemini API
     genai.configure(api_key="AIzaSyD9x7Kz8adDo6-nVyk9MAQjlwD4lTeKc84")
@@ -486,7 +486,49 @@ if selected == 'Text-to-disease-predictor':
     user_input = st.text_area("Enter your symptoms (e.g., 'I have a fever and cough'):")
 
     # Define candidate diseases
-    candidate_labels = ["influenza", "COVID-19", "common cold", "pneumonia", "bronchitis"]
+    candidate_labels = [
+    "Diabetes", "Hypertension", "Obesity", "Cardiovascular Disease", "COPD",
+    "Liver Disease", "Kidney Disease", "Metabolic Syndrome", "Osteoarthritis",
+    "GERD", "Cancer", "Alzheimer's Disease", "Depression", "Sleep Apnea",
+    "Thyroid Disorders"
+    ]
+
+    with st.expander("Click to view common lifestyle diseases"):
+        diseases = [
+            "Diabetes", "Hypertension", "Obesity", "Cardiovascular Disease", "COPD",
+            "Liver Disease", "Kidney Disease", "Metabolic Syndrome", "Osteoarthritis",
+            "GERD", "Cancer", "Alzheimer's Disease", "Depression", "Sleep Apnea",
+            "Thyroid Disorders"
+        ]
+        
+        for disease in diseases:
+            st.write(f"- {disease}")
+
+    with st.expander("Click to view common lifestyle diseases and their symptoms"):
+        diseases = {
+            "Diabetes": ["Frequent urination", "Increased thirst", "Unexplained weight loss", "Fatigue", "Blurred vision"],
+            "Hypertension": ["Headache", "Dizziness", "Chest pain", "Shortness of breath", "Nosebleeds"],
+            "Obesity": ["Excess body fat", "Breathlessness", "Joint pain", "Increased sweating", "Low energy levels"],
+            "Cardiovascular Disease": ["Chest pain", "Shortness of breath", "Dizziness", "Irregular heartbeat", "Fatigue"],
+            "COPD": ["Chronic cough", "Shortness of breath", "Wheezing", "Chest tightness", "Frequent respiratory infections"],
+            "Liver Disease": ["Jaundice", "Abdominal pain", "Swelling in legs", "Chronic fatigue", "Nausea"],
+            "Kidney Disease": ["Swelling in legs", "Fatigue", "Loss of appetite", "Changes in urination", "Muscle cramps"],
+            "Metabolic Syndrome": ["High blood sugar", "High blood pressure", "Increased waist size", "High cholesterol", "Fatigue"],
+            "Osteoarthritis": ["Joint pain", "Stiffness", "Swelling", "Reduced flexibility", "Bone spurs"],
+            "GERD": ["Heartburn", "Acid reflux", "Difficulty swallowing", "Chronic cough", "Sore throat"],
+            "Cancer": ["Unexplained weight loss", "Persistent cough", "Fatigue", "Lumps", "Skin changes"],
+            "Alzheimer's Disease": ["Memory loss", "Confusion", "Difficulty in problem-solving", "Mood changes", "Disorientation"],
+            "Depression": ["Persistent sadness", "Loss of interest", "Sleep disturbances", "Fatigue", "Difficulty concentrating"],
+            "Sleep Apnea": ["Loud snoring", "Pauses in breathing", "Daytime drowsiness", "Morning headaches", "Irritability"],
+            "Thyroid Disorders": ["Weight changes", "Fatigue", "Hair loss", "Mood swings", "Temperature sensitivity"]
+        }
+
+        for disease, symptoms in diseases.items():
+            st.markdown(f"### {disease}")
+            st.write("**Common Symptoms:**")
+            for symptom in symptoms:
+                st.write(f"- {symptom}")
+            st.write("---")  # Adds a separator between diseases for better readability
 
     if st.button("Predict Disease"):
         if user_input:
@@ -498,7 +540,59 @@ if selected == 'Text-to-disease-predictor':
 
 
 if selected == 'Checkbox-to-disease-predictor':
-    st.title("🔮 Checkbox-to-Disease Predictor")
-    st.markdown("### Select symptoms to predict the likelihood of a disease!")
-    st.write("This tool uses a pre-trained model to predict the likelihood of common diseases based on your selected symptoms.")
 
+    classifier = pipeline("zero-shot-classification", model="microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract")
+
+    # Define symptoms for each disease
+    diseases = {
+        "Diabetes": ["Frequent urination", "Increased thirst", "Unexplained weight loss", "Fatigue", "Blurred vision"],
+        "Hypertension": ["Headache", "Dizziness", "Chest pain", "Shortness of breath", "Nosebleeds"],
+        "Obesity": ["Excess body fat", "Breathlessness", "Joint pain", "Increased sweating", "Low energy levels"],
+        "Cardiovascular Disease": ["Chest pain", "Shortness of breath", "Dizziness", "Irregular heartbeat", "Fatigue"],
+        "COPD": ["Chronic cough", "Shortness of breath", "Wheezing", "Chest tightness", "Frequent respiratory infections"],
+        "Liver Disease": ["Jaundice", "Abdominal pain", "Swelling in legs", "Chronic fatigue", "Nausea"],
+        "Kidney Disease": ["Swelling in legs", "Fatigue", "Loss of appetite", "Changes in urination", "Muscle cramps"],
+        "Metabolic Syndrome": ["High blood sugar", "High blood pressure", "Increased waist size", "High cholesterol", "Fatigue"],
+        "Osteoarthritis": ["Joint pain", "Stiffness", "Swelling", "Reduced flexibility", "Bone spurs"],
+        "GERD": ["Heartburn", "Acid reflux", "Difficulty swallowing", "Chronic cough", "Sore throat"],
+        "Cancer": ["Unexplained weight loss", "Persistent cough", "Fatigue", "Lumps", "Skin changes"],
+        "Alzheimer's Disease": ["Memory loss", "Confusion", "Difficulty in problem-solving", "Mood changes", "Disorientation"],
+        "Depression": ["Persistent sadness", "Loss of interest", "Sleep disturbances", "Fatigue", "Difficulty concentrating"],
+        "Sleep Apnea": ["Loud snoring", "Pauses in breathing", "Daytime drowsiness", "Morning headaches", "Irritability"],
+        "Thyroid Disorders": ["Weight changes", "Fatigue", "Hair loss", "Mood swings", "Temperature sensitivity"]
+    }
+
+    # Streamlit UI
+    st.title("Med-BERT Symptom Checker")
+    st.write("Select your symptoms:")
+
+    selected_symptoms = []
+
+    # Create symptom selection with markdown separation and three columns
+    disease_keys = list(diseases.keys())
+
+    for i in range(0, len(disease_keys), 3):
+        cols = st.columns(3)
+        for j in range(3):
+            if i + j < len(disease_keys):
+                disease = disease_keys[i + j]
+                with cols[j]:
+                    st.markdown(f"### {disease}")
+                    for symptom in diseases[disease]:
+                        if st.checkbox(symptom, key=f"{disease}_{symptom}"):
+                            selected_symptoms.append(symptom)
+
+    if st.button("Predict Disease"):
+        if selected_symptoms:
+            # Convert selected symptoms into a text input
+            symptom_text = ", ".join(selected_symptoms)
+            
+            # Use Med-BERT for disease prediction
+            result = classifier(symptom_text, list(diseases.keys()))
+            
+            # Display ranked diseases
+            st.write("Possible Conditions (Ranked by Med-BERT):")
+            for disease, score in zip(result["labels"], result["scores"]):
+                st.write(f"🩺 {disease}: {round(score * 100, 2)}% risk")
+        else:
+            st.write("Please select at least one symptom.")

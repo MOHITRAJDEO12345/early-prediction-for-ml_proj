@@ -626,3 +626,6 @@ if selected == "Mental-Analysis":
 
             # Display the chart in a single column
             st.pyplot(fig)
+
+
+#hashesh

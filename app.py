@@ -36,7 +36,7 @@ with st.sidebar:
     
     selected = option_menu(
         menu_title="Navigation",
-        options=['Home', 'Diabetes Prediction', 'Asthma Prediction', 'Cardiovascular Disease Prediction', 'Stroke Prediction', 'Data Visualization', 'Chat with us', 'Text-to-disease-predictor', 'Checkbox-to-disease-predictor'],
+        options=['Home','Checkbox-to-disease-predictor',  'AI Health Consultant', 'Mental-Analysis', 'Diabetes Prediction', 'Asthma Prediction', 'Cardiovascular Disease Prediction', 'Stroke Prediction', 'Data Visualization' ],
         icons=['house', 'activity', 'lungs', 'heart-pulse', 'brain', 'bar-chart', 'chat'],
         menu_icon="cast",
         default_index=0,
@@ -58,56 +58,46 @@ def safe_float(value, default=0.0):
 
 # 🚀 Home Page
 if selected == 'Home':
-    st.title("🩺 Multiple Disease Prediction System")
+    st.title("🩺 AI-Powered Health & Lifestyle Disease Prediction")
 
     st.markdown("""
     ## Welcome to the **AI-Powered Health Prediction System**!  
-    This tool helps predict the likelihood of **four major diseases** using **Machine Learning**:
+    This tool provides **early prediction and analysis** for various health conditions using **Machine Learning & NLP**.
     
-    - **🩸 Diabetes**
-    - **🌬️ Asthma**
-    - **🧠 Stroke**
-    - **❤️ Cardiovascular Disease**
-    
-    👉 Select a prediction model from the sidebar to proceed!  
+    ### 🏥 Available Features:
+    - **✅ Checkbox-based Lifestyle Disease Predictor** using **BiomedNLP-PubMedBERT**  
+    - **🤖 AI Chatbot for Health Assistance** (Ask health-related questions)  
+    - **🧠 Mental Health Assessment**  
+    - **🩸 Disease Predictors**:
+      - Diabetes  
+      - Asthma  
+      - Stroke  
+      - Cardiovascular Disease  
+    - **📊 Data Visualizer** (Analyze trends in health conditions)  
+                
+    👉 Select an option from the sidebar to proceed!  
     """)
 
     with st.expander("🚀 Quick Start Guide"):
         st.write("""
-        1. Select a disease prediction model from the sidebar.
-        2. Enter your medical details in the input fields.
-        3. Click the **Predict** button to get your result.
-        4. Read health recommendations based on your result.
+        1. Select a **health prediction model** from the sidebar.
+        2. Enter your details in the input fields.
+        3. Click **Predict** to get your result.
+        4. View personalized **health insights & recommendations**.
         """)
 
-    st.markdown("""
-        ### 📚 Learn More About These Diseases
-        - [What is Diabetes?](https://www.example.com)
-        - [Understanding Asthma](https://www.example.com)
-        - [Stroke Prevention & Recovery](https://www.example.com)
-        - [Heart & Cardiovascular Health](https://www.example.com)
-        """)
-
-    # ⭐ User Rating System
-    rating = st.slider("⭐ Rate this app", 1, 5)
-    if st.button('Submit Rating'):
-        st.success(f"✅ Thank you for rating us {rating} stars!")
-
-    # 💬 User Feedback Section
-    feedback = st.text_area("💬 Provide Feedback", placeholder="How was your experience?")
-    if st.button('Submit Feedback'):
-        st.success("✅ Thank you for your feedback!")
-
-    # 📩 Contact Information
-    st.markdown("""
-        ### 📩 Contact Us
-        Have questions? Email us at [mohitrajdeo16deoghar@gmail.com](mailto:mohitrajdeo16deoghar@gmail.com).
-        """)
 
     # Disclaimer Section
     st.markdown("---")
     st.markdown("""
-    **⚠️ Disclaimer:** This app is for educational purposes only and should not replace professional medical advice.
+    **⚠️ Disclaimer:** This application has been developed using **real-world healthcare datasets** sourced from Kaggle:  
+    - [Stroke Prediction Dataset](http://kaggle.com/code/chanchal24/stroke-prediction-using-python/input?select=healthcare-dataset-stroke-data.csv)  
+    - [Asthma Analysis & Prediction](https://www.kaggle.com/code/bryamblasrimac/asthma-eda-prediction-f2score-85/input)  
+    - [Diabetes Dataset](https://www.kaggle.com/datasets/mathchi/diabetes-data-set)  
+
+    The predictions are generated using **machine learning models** trained on these datasets, incorporating **evaluation metrics and graphical insights** to enhance interpretability.  
+
+    However, this tool has **not undergone clinical validation** and should be used **for informational and educational purposes only**. It is not intended to serve as a substitute for professional medical diagnosis or treatment. Always consult a qualified healthcare provider for medical advice.
     """)
 
 if selected == 'Diabetes Prediction':
@@ -387,20 +377,11 @@ if selected == 'Data Visualization':
             st.pyplot(fig)
 
 
-if selected == 'Chat with us':
-    st.title("👩‍💻 Chat with us")
-    st.markdown("### Let's chat about your health concerns!")
-    st.write("Ask about **Diabetes, Asthma, Stroke, or Cardiovascular Disease**.")
+if selected == 'AI Health Consultant':
+    st.title("🩺 AI Health Consultation Assistant")
+    st.markdown("### Discuss Your Health Concerns with Our AI-powered Chatbot")
+    st.write("Ask about **Diabetes, Asthma, Stroke, Cardiovascular Disease, or Mental Health.**")
 
-    # load_dotenv()
-
-    # Get the Gemini API key
-    # api_key = os.getenv("GEMINI_API_KEY")
-    # if not api_key:
-    #     st.error("❌ API Key not found! Please check your .env file.")
-    #     st.stop()
-
-    # Configure Gemini API
     genai.configure(api_key="AIzaSyD9x7Kz8adDo6-nVyk9MAQjlwD4lTeKc84")
 
     # Custom Styling
@@ -408,36 +389,44 @@ if selected == 'Chat with us':
         <style>
             .prompt-box { 
                 background-color: #000000; 
-                padding: 10px; 
+                padding: 12px; 
                 border-radius: 8px; 
                 font-size: 14px; 
-                font-family: monospace;
+                font-family: sans-serif;
                 margin-bottom: 10px;
+                border: 1px solid #dee2e6;
+                text-align: center;
             }
         </style>
     """, unsafe_allow_html=True)
 
-    st.title("🩺 Health Specialist Chatbot")
-    st.markdown("### Get expert advice on **Diabetes, Asthma, Stroke, and Cardiovascular Disease!**")
-    st.write("Ask me about symptoms, diet, exercise, and lifestyle recommendations.")
+    st.markdown("#### 💡 Common Health Queries")
 
-    # Predefined Prompts for Four Diseases
-    st.markdown("#### 💡 Quick Prompts (Click to Copy)")
-    
-    prompt_options = {
-        "Diabetes – Diet": "What foods should I eat if I have diabetes?",
-        "Diabetes – Exercise": "What type of workouts help control blood sugar levels?",
-        "Asthma – Triggers": "What are common asthma triggers?",
-        "Asthma – Treatment": "What are the best medications for asthma?",
-        "Stroke – Symptoms": "What are the early warning signs of a stroke?",
-        "Stroke – Recovery": "How long does it take to recover from a stroke?",
-        "Cardiovascular – Heart Health": "How can I reduce my risk of heart disease?",
-        "Cardiovascular – Blood Pressure": "What lifestyle changes can lower high blood pressure?"
-    }
+    prompt_options = [
+        ("Diabetes – Diet", "What foods should I eat if I have diabetes?"),
+        ("Diabetes – Exercise", "What type of workouts help control blood sugar levels?"),
+        ("Asthma – Triggers", "What are common asthma triggers?"),
+        ("Asthma – Treatment", "What are the best medications for asthma?"),
+        ("Stroke – Symptoms", "What are the early warning signs of a stroke?"),
+        ("Stroke – Prevention", "How can I reduce my risk of stroke?"),
+        ("Cardiovascular – Heart Health", "How can I reduce my risk of heart disease?"),
+        ("Cardiovascular – Blood Pressure", "What lifestyle changes can lower high blood pressure?"),
+        ("Mental Health – Stress Management", "How can I manage stress effectively?"),
+        ("Mental Health – Sleep Disorders", "What are the causes and treatments for sleep disorders?")
+    ]
 
-    for label, prompt in prompt_options.items():
-        st.markdown(f"""<div class="prompt-box"><strong>{label}</strong><br>{prompt}</div>""", unsafe_allow_html=True)
-        st.code(prompt, language="text")
+    # Display prompts in two columns (2 prompts per row)
+    cols = st.columns(2)
+    for i in range(0, len(prompt_options), 2):
+        with cols[0]: 
+            if i < len(prompt_options):
+                label, prompt = prompt_options[i]
+                st.markdown(f"""<div class="prompt-box"><strong>{label}</strong><br>{prompt}</div>""", unsafe_allow_html=True)
+
+        with cols[1]: 
+            if i+1 < len(prompt_options):
+                label, prompt = prompt_options[i+1]
+                st.markdown(f"""<div class="prompt-box"><strong>{label}</strong><br>{prompt}</div>""", unsafe_allow_html=True)
 
     # Initialize chat history if not present
     if "chat_history" not in st.session_state:
@@ -449,98 +438,110 @@ if selected == 'Chat with us':
             st.markdown(message["content"])
 
     # User input field
-    user_prompt = st.chat_input("Ask about Diabetes, Asthma, Stroke, or Cardiovascular Disease...")
+    user_prompt = st.chat_input("Ask about Diabetes, Asthma, Stroke, Cardiovascular Disease, or Mental Health...")
+
+    # List of allowed topics
+    allowed_keywords = ["diabetes", "asthma", "stroke", "cardiovascular", "heart", "blood pressure", 
+                        "mental health", "depression", "stress", "cholesterol", "sleep disorders"]
 
     if user_prompt:
         # Display user message
         st.chat_message("user").markdown(user_prompt)
         st.session_state.chat_history.append({"role": "user", "content": user_prompt})
 
-        # Gemini API request
-        model = genai.GenerativeModel("gemini-2.0-flash-lite")
-        response = model.generate_content(user_prompt)
+        # Restriction: Only process if related to health topics
+        if any(keyword in user_prompt.lower() for keyword in allowed_keywords):
+            model = genai.GenerativeModel("gemini-2.0-flash-lite")
+            response = model.generate_content(user_prompt)
 
-        if response and hasattr(response, "text"):
-            assistant_response = response.text
+            if response and hasattr(response, "text"):
+                assistant_response = response.text
+            else:
+                assistant_response = "I'm sorry, I couldn't generate a response."
+
+            st.session_state.chat_history.append({"role": "assistant", "content": assistant_response})
+
+            # Display assistant's response
+            with st.chat_message("assistant"):
+                st.markdown(assistant_response)
         else:
-            assistant_response = "I'm sorry, I couldn't generate a response."
+            # Restriction message
+            restriction_msg = "**⚠️ This chatbot only responds to health-related topics.**\nPlease ask about Diabetes, Asthma, Stroke, Cardiovascular Disease, or Mental Health."
+            st.session_state.chat_history.append({"role": "assistant", "content": restriction_msg})
+            
+            with st.chat_message("assistant"):
+                st.markdown(restriction_msg)
 
-        st.session_state.chat_history.append({"role": "assistant", "content": assistant_response})
 
-        # Display assistant's response
-        with st.chat_message("assistant"):
-            st.markdown(assistant_response)
+# if selected == 'Text-to-disease-predictor':
+#     st.title("🔮 Text-to-Disease Predictor")
+#     st.markdown("### Enter your symptoms to predict the likelihood of a disease!")
+#     st.write("Try entering symptoms like 'I have a fever and cough'.")
+#     st.write("This tool uses a pre-trained model to predict the likelihood of common diseases based on your symptoms.")
 
+#     # Load the pre-trained model
+#     classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
 
-if selected == 'Text-to-disease-predictor':
-    st.title("🔮 Text-to-Disease Predictor")
-    st.markdown("### Enter your symptoms to predict the likelihood of a disease!")
-    st.write("Try entering symptoms like 'I have a fever and cough'.")
-    st.write("This tool uses a pre-trained model to predict the likelihood of common diseases based on your symptoms.")
+#     # Streamlit UI
+#     st.title("Text-Based Symptom Analysis")
+#     user_input = st.text_area("Enter your symptoms (e.g., 'I have a fever and cough'):")
 
-    # Load the pre-trained model
-    classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
+#     # Define candidate diseases
+#     candidate_labels = [
+#     "Diabetes", "Hypertension", "Obesity", "Cardiovascular Disease", "COPD",
+#     "Liver Disease", "Kidney Disease", "Metabolic Syndrome", "Osteoarthritis",
+#     "GERD", "Cancer", "Alzheimer's Disease", "Depression", "Sleep Apnea",
+#     "Thyroid Disorders"
+#     ]
 
-    # Streamlit UI
-    st.title("Text-Based Symptom Analysis")
-    user_input = st.text_area("Enter your symptoms (e.g., 'I have a fever and cough'):")
-
-    # Define candidate diseases
-    candidate_labels = [
-    "Diabetes", "Hypertension", "Obesity", "Cardiovascular Disease", "COPD",
-    "Liver Disease", "Kidney Disease", "Metabolic Syndrome", "Osteoarthritis",
-    "GERD", "Cancer", "Alzheimer's Disease", "Depression", "Sleep Apnea",
-    "Thyroid Disorders"
-    ]
-
-    with st.expander("Click to view common lifestyle diseases"):
-        diseases = [
-            "Diabetes", "Hypertension", "Obesity", "Cardiovascular Disease", "COPD",
-            "Liver Disease", "Kidney Disease", "Metabolic Syndrome", "Osteoarthritis",
-            "GERD", "Cancer", "Alzheimer's Disease", "Depression", "Sleep Apnea",
-            "Thyroid Disorders"
-        ]
+#     with st.expander("Click to view common lifestyle diseases"):
+#         diseases = [
+#             "Diabetes", "Hypertension", "Obesity", "Cardiovascular Disease", "COPD",
+#             "Liver Disease", "Kidney Disease", "Metabolic Syndrome", "Osteoarthritis",
+#             "GERD", "Cancer", "Alzheimer's Disease", "Depression", "Sleep Apnea",
+#             "Thyroid Disorders"
+#         ]
         
-        for disease in diseases:
-            st.write(f"- {disease}")
+#         for disease in diseases:
+#             st.write(f"- {disease}")
 
-    with st.expander("Click to view common lifestyle diseases and their symptoms"):
-        diseases = {
-            "Diabetes": ["Frequent urination", "Increased thirst", "Unexplained weight loss", "Fatigue", "Blurred vision"],
-            "Hypertension": ["Headache", "Dizziness", "Chest pain", "Shortness of breath", "Nosebleeds"],
-            "Obesity": ["Excess body fat", "Breathlessness", "Joint pain", "Increased sweating", "Low energy levels"],
-            "Cardiovascular Disease": ["Chest pain", "Shortness of breath", "Dizziness", "Irregular heartbeat", "Fatigue"],
-            "COPD": ["Chronic cough", "Shortness of breath", "Wheezing", "Chest tightness", "Frequent respiratory infections"],
-            "Liver Disease": ["Jaundice", "Abdominal pain", "Swelling in legs", "Chronic fatigue", "Nausea"],
-            "Kidney Disease": ["Swelling in legs", "Fatigue", "Loss of appetite", "Changes in urination", "Muscle cramps"],
-            "Metabolic Syndrome": ["High blood sugar", "High blood pressure", "Increased waist size", "High cholesterol", "Fatigue"],
-            "Osteoarthritis": ["Joint pain", "Stiffness", "Swelling", "Reduced flexibility", "Bone spurs"],
-            "GERD": ["Heartburn", "Acid reflux", "Difficulty swallowing", "Chronic cough", "Sore throat"],
-            "Cancer": ["Unexplained weight loss", "Persistent cough", "Fatigue", "Lumps", "Skin changes"],
-            "Alzheimer's Disease": ["Memory loss", "Confusion", "Difficulty in problem-solving", "Mood changes", "Disorientation"],
-            "Depression": ["Persistent sadness", "Loss of interest", "Sleep disturbances", "Fatigue", "Difficulty concentrating"],
-            "Sleep Apnea": ["Loud snoring", "Pauses in breathing", "Daytime drowsiness", "Morning headaches", "Irritability"],
-            "Thyroid Disorders": ["Weight changes", "Fatigue", "Hair loss", "Mood swings", "Temperature sensitivity"]
-        }
+#     with st.expander("Click to view common lifestyle diseases and their symptoms"):
+#         diseases = {
+#             "Diabetes": ["Frequent urination", "Increased thirst", "Unexplained weight loss", "Fatigue", "Blurred vision"],
+#             "Hypertension": ["Headache", "Dizziness", "Chest pain", "Shortness of breath", "Nosebleeds"],
+#             "Obesity": ["Excess body fat", "Breathlessness", "Joint pain", "Increased sweating", "Low energy levels"],
+#             "Cardiovascular Disease": ["Chest pain", "Shortness of breath", "Dizziness", "Irregular heartbeat", "Fatigue"],
+#             "COPD": ["Chronic cough", "Shortness of breath", "Wheezing", "Chest tightness", "Frequent respiratory infections"],
+#             "Liver Disease": ["Jaundice", "Abdominal pain", "Swelling in legs", "Chronic fatigue", "Nausea"],
+#             "Kidney Disease": ["Swelling in legs", "Fatigue", "Loss of appetite", "Changes in urination", "Muscle cramps"],
+#             "Metabolic Syndrome": ["High blood sugar", "High blood pressure", "Increased waist size", "High cholesterol", "Fatigue"],
+#             "Osteoarthritis": ["Joint pain", "Stiffness", "Swelling", "Reduced flexibility", "Bone spurs"],
+#             "GERD": ["Heartburn", "Acid reflux", "Difficulty swallowing", "Chronic cough", "Sore throat"],
+#             "Cancer": ["Unexplained weight loss", "Persistent cough", "Fatigue", "Lumps", "Skin changes"],
+#             "Alzheimer's Disease": ["Memory loss", "Confusion", "Difficulty in problem-solving", "Mood changes", "Disorientation"],
+#             "Depression": ["Persistent sadness", "Loss of interest", "Sleep disturbances", "Fatigue", "Difficulty concentrating"],
+#             "Sleep Apnea": ["Loud snoring", "Pauses in breathing", "Daytime drowsiness", "Morning headaches", "Irritability"],
+#             "Thyroid Disorders": ["Weight changes", "Fatigue", "Hair loss", "Mood swings", "Temperature sensitivity"]
+#         }
 
-        for disease, symptoms in diseases.items():
-            st.markdown(f"### {disease}")
-            st.write("**Common Symptoms:**")
-            for symptom in symptoms:
-                st.write(f"- {symptom}")
-            st.write("---")  # Adds a separator between diseases for better readability
+#         for disease, symptoms in diseases.items():
+#             st.markdown(f"### {disease}")
+#             st.write("**Common Symptoms:**")
+#             for symptom in symptoms:
+#                 st.write(f"- {symptom}")
+#             st.write("---")  # Adds a separator between diseases for better readability
 
-    if st.button("Predict Disease"):
-        if user_input:
-            result = classifier(user_input, candidate_labels)
-            st.write("Possible Conditions:")
-            for disease, score in zip(result["labels"], result["scores"]):
-                st.write(f"🩺 {disease}: {round(score * 100, 2)}% risk")
+#     if st.button("Predict Disease"):
+#         if user_input:
+#             result = classifier(user_input, candidate_labels)
+#             st.write("Possible Conditions:")
+#             for disease, score in zip(result["labels"], result["scores"]):
+#                 st.write(f"🩺 {disease}: {round(score * 100, 2)}% risk")
 
 
 
 if selected == 'Checkbox-to-disease-predictor':
-
+# Load transformer model
     classifier = pipeline("zero-shot-classification", model="microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract")
 
     # Define symptoms for each disease
@@ -554,17 +555,14 @@ if selected == 'Checkbox-to-disease-predictor':
         "Kidney Disease": ["Swelling in legs", "Fatigue", "Loss of appetite", "Changes in urination", "Muscle cramps"],
         "Metabolic Syndrome": ["High blood sugar", "High blood pressure", "Increased waist size", "High cholesterol", "Fatigue"],
         "Osteoarthritis": ["Joint pain", "Stiffness", "Swelling", "Reduced flexibility", "Bone spurs"],
-        "GERD": ["Heartburn", "Acid reflux", "Difficulty swallowing", "Chronic cough", "Sore throat"],
-        "Cancer": ["Unexplained weight loss", "Persistent cough", "Fatigue", "Lumps", "Skin changes"],
-        "Alzheimer's Disease": ["Memory loss", "Confusion", "Difficulty in problem-solving", "Mood changes", "Disorientation"],
+        "Gastroesophageal Reflux Disease": ["Heartburn", "Acid reflux", "Difficulty swallowing", "Chronic cough", "Sore throat"],
         "Depression": ["Persistent sadness", "Loss of interest", "Sleep disturbances", "Fatigue", "Difficulty concentrating"],
         "Sleep Apnea": ["Loud snoring", "Pauses in breathing", "Daytime drowsiness", "Morning headaches", "Irritability"],
-        "Thyroid Disorders": ["Weight changes", "Fatigue", "Hair loss", "Mood swings", "Temperature sensitivity"]
     }
 
     # Streamlit UI
-    st.title("Med-BERT Symptom Checker")
-    st.write("Select your symptoms:")
+    st.title("🩺 Hybrid Symptom Checker")
+    st.write("Select your symptoms and get AI-powered predictions!")
 
     selected_symptoms = []
 
@@ -582,17 +580,79 @@ if selected == 'Checkbox-to-disease-predictor':
                         if st.checkbox(symptom, key=f"{disease}_{symptom}"):
                             selected_symptoms.append(symptom)
 
-    if st.button("Predict Disease"):
+    if st.button("🔍 Predict Disease"):
         if selected_symptoms:
-            # Convert selected symptoms into a text input
-            symptom_text = ", ".join(selected_symptoms)
-            
-            # Use Med-BERT for disease prediction
-            result = classifier(symptom_text, list(diseases.keys()))
-            
-            # Display ranked diseases
-            st.write("Possible Conditions (Ranked by Med-BERT):")
-            for disease, score in zip(result["labels"], result["scores"]):
-                st.write(f"🩺 {disease}: {round(score * 100, 2)}% risk")
+            user_input = ", ".join(selected_symptoms)  # Convert symptoms to text
+
+            # 1️⃣ Custom Symptom Matching Approach
+            disease_scores = {disease: 0 for disease in diseases.keys()}
+            for disease, symptoms in diseases.items():
+                matches = sum(symptom in selected_symptoms for symptom in symptoms)
+                disease_scores[disease] = matches / len(symptoms)  # Normalize by symptom count
+
+            # Normalize to percentage
+            symptom_match_scores = {d: round(score * 100, 2) for d, score in disease_scores.items()}
+
+            # 2️⃣ AI Model Prediction
+            ai_results = classifier(user_input, list(diseases.keys()))
+            ai_scores = {ai_results["labels"][i]: round(ai_results["scores"][i] * 100, 2) for i in range(len(ai_results["labels"]))}
+
+            # 3️⃣ Hybrid Score Calculation (Average of Both Scores)
+            final_scores = {}
+            for disease in diseases.keys():
+                symptom_score = symptom_match_scores.get(disease, 0)
+                ai_score = ai_scores.get(disease, 0)
+                final_scores[disease] = round((symptom_score + ai_score) / 2, 2)  # Averaging
+
+            # Sort by final score
+            sorted_final_scores = sorted(final_scores.items(), key=lambda x: x[1], reverse=True)
+
+            # Display results
+            st.write("### 🔬 Possible Conditions (Hybrid Model Prediction):")
+            for disease, score in sorted_final_scores:
+                if score > 0:
+                    st.write(f"🩺 {disease}: {score}% match")
         else:
-            st.write("Please select at least one symptom.")
+            st.write("⚠️ Please select at least one symptom.")
+
+
+if selected == "Mental-Analysis":
+    # Load the Hugging Face model
+    classifier = pipeline("text-classification", model="mental/mental-roberta-base")
+
+    # Sidebar with title and markdown
+    st.sidebar.title("🧠 Mental Health Analysis")
+    st.sidebar.markdown("""
+    Analyze mental health symptoms using a **pre-trained AI model**.  
+    This tool predicts **Depression, Anxiety, PTSD, Bipolar Disorder, and Schizophrenia** based on text input.
+    """)
+
+    # Main content
+    st.title("🔬 Mental Health Text Analysis")
+    st.markdown("Enter a description of your mental state, and the AI will predict possible conditions.")
+
+    # User input
+    user_input = st.text_area("Describe your symptoms (e.g., 'I feel hopeless and anxious all the time.'):")
+
+    if st.button("Analyze"):
+        if user_input:
+            # Get predictions
+            results = classifier(user_input)
+
+            # Extract labels and scores
+            labels = [res["label"] for res in results]
+            scores = [res["score"] for res in results]
+
+            # Display results
+            st.write("### Predictions:")
+            for label, score in zip(labels, scores):
+                st.write(f"🩺 **{label}**: {round(score * 100, 2)}% confidence")
+
+            # Create a bar chart
+            fig, ax = plt.subplots()
+            ax.barh(labels, scores, color=['blue', 'red', 'green', 'purple', 'orange'])
+            ax.set_xlabel("Confidence Score")
+            ax.set_title("Mental Health Analysis Results")
+            ax.set_xlim(0, 1)  # Ensure scores are between 0 and 1
+            st.pyplot(fig)
+

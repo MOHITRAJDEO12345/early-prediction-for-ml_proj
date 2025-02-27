@@ -91,14 +91,18 @@ if selected == 'Home':
     st.markdown("---")
     st.markdown("""
     **⚠️ Disclaimer:** This application has been developed using **real-world healthcare datasets** sourced from Kaggle:  
+
     - [Stroke Prediction Dataset](http://kaggle.com/code/chanchal24/stroke-prediction-using-python/input?select=healthcare-dataset-stroke-data.csv)  
     - [Asthma Analysis & Prediction](https://www.kaggle.com/code/bryamblasrimac/asthma-eda-prediction-f2score-85/input)  
     - [Diabetes Dataset](https://www.kaggle.com/datasets/mathchi/diabetes-data-set)  
+    - [Cardiovascular Disease Dataset](https://www.kaggle.com/datasets/sulianova/cardiovascular-disease-dataset)  
+    - [Sentiment Analysis for Mental Health](https://www.kaggle.com/datasets/suchintikasarkar/sentiment-analysis-for-mental-health)  
 
     The predictions are generated using **machine learning models** trained on these datasets, incorporating **evaluation metrics and graphical insights** to enhance interpretability.  
 
     However, this tool has **not undergone clinical validation** and should be used **for informational and educational purposes only**. It is not intended to serve as a substitute for professional medical diagnosis or treatment. Always consult a qualified healthcare provider for medical advice.
     """)
+
 
 if selected == 'Diabetes Prediction':
     st.title('🩸 Diabetes Prediction using ML (SVC)')
@@ -473,73 +477,6 @@ if selected == 'AI Health Consultant':
                 st.markdown(restriction_msg)
 
 
-# if selected == 'Text-to-disease-predictor':
-#     st.title("🔮 Text-to-Disease Predictor")
-#     st.markdown("### Enter your symptoms to predict the likelihood of a disease!")
-#     st.write("Try entering symptoms like 'I have a fever and cough'.")
-#     st.write("This tool uses a pre-trained model to predict the likelihood of common diseases based on your symptoms.")
-
-#     # Load the pre-trained model
-#     classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
-
-#     # Streamlit UI
-#     st.title("Text-Based Symptom Analysis")
-#     user_input = st.text_area("Enter your symptoms (e.g., 'I have a fever and cough'):")
-
-#     # Define candidate diseases
-#     candidate_labels = [
-#     "Diabetes", "Hypertension", "Obesity", "Cardiovascular Disease", "COPD",
-#     "Liver Disease", "Kidney Disease", "Metabolic Syndrome", "Osteoarthritis",
-#     "GERD", "Cancer", "Alzheimer's Disease", "Depression", "Sleep Apnea",
-#     "Thyroid Disorders"
-#     ]
-
-#     with st.expander("Click to view common lifestyle diseases"):
-#         diseases = [
-#             "Diabetes", "Hypertension", "Obesity", "Cardiovascular Disease", "COPD",
-#             "Liver Disease", "Kidney Disease", "Metabolic Syndrome", "Osteoarthritis",
-#             "GERD", "Cancer", "Alzheimer's Disease", "Depression", "Sleep Apnea",
-#             "Thyroid Disorders"
-#         ]
-        
-#         for disease in diseases:
-#             st.write(f"- {disease}")
-
-#     with st.expander("Click to view common lifestyle diseases and their symptoms"):
-#         diseases = {
-#             "Diabetes": ["Frequent urination", "Increased thirst", "Unexplained weight loss", "Fatigue", "Blurred vision"],
-#             "Hypertension": ["Headache", "Dizziness", "Chest pain", "Shortness of breath", "Nosebleeds"],
-#             "Obesity": ["Excess body fat", "Breathlessness", "Joint pain", "Increased sweating", "Low energy levels"],
-#             "Cardiovascular Disease": ["Chest pain", "Shortness of breath", "Dizziness", "Irregular heartbeat", "Fatigue"],
-#             "COPD": ["Chronic cough", "Shortness of breath", "Wheezing", "Chest tightness", "Frequent respiratory infections"],
-#             "Liver Disease": ["Jaundice", "Abdominal pain", "Swelling in legs", "Chronic fatigue", "Nausea"],
-#             "Kidney Disease": ["Swelling in legs", "Fatigue", "Loss of appetite", "Changes in urination", "Muscle cramps"],
-#             "Metabolic Syndrome": ["High blood sugar", "High blood pressure", "Increased waist size", "High cholesterol", "Fatigue"],
-#             "Osteoarthritis": ["Joint pain", "Stiffness", "Swelling", "Reduced flexibility", "Bone spurs"],
-#             "GERD": ["Heartburn", "Acid reflux", "Difficulty swallowing", "Chronic cough", "Sore throat"],
-#             "Cancer": ["Unexplained weight loss", "Persistent cough", "Fatigue", "Lumps", "Skin changes"],
-#             "Alzheimer's Disease": ["Memory loss", "Confusion", "Difficulty in problem-solving", "Mood changes", "Disorientation"],
-#             "Depression": ["Persistent sadness", "Loss of interest", "Sleep disturbances", "Fatigue", "Difficulty concentrating"],
-#             "Sleep Apnea": ["Loud snoring", "Pauses in breathing", "Daytime drowsiness", "Morning headaches", "Irritability"],
-#             "Thyroid Disorders": ["Weight changes", "Fatigue", "Hair loss", "Mood swings", "Temperature sensitivity"]
-#         }
-
-#         for disease, symptoms in diseases.items():
-#             st.markdown(f"### {disease}")
-#             st.write("**Common Symptoms:**")
-#             for symptom in symptoms:
-#                 st.write(f"- {symptom}")
-#             st.write("---")  # Adds a separator between diseases for better readability
-
-#     if st.button("Predict Disease"):
-#         if user_input:
-#             result = classifier(user_input, candidate_labels)
-#             st.write("Possible Conditions:")
-#             for disease, score in zip(result["labels"], result["scores"]):
-#                 st.write(f"🩺 {disease}: {round(score * 100, 2)}% risk")
-
-
-
 if selected == 'Checkbox-to-disease-predictor':
 # Load transformer model
     classifier = pipeline("zero-shot-classification", model="microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract")
@@ -616,15 +553,24 @@ if selected == 'Checkbox-to-disease-predictor':
             st.write("⚠️ Please select at least one symptom.")
 
 
+import streamlit as st
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import torch
+from transformers import pipeline, AutoModelForSequenceClassification, AutoTokenizer
+
 if selected == "Mental-Analysis":
     # Load the Hugging Face model
-    classifier = pipeline("text-classification", model="mental/mental-roberta-base")
+    model_name = "mental/mental-roberta-base"
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForSequenceClassification.from_pretrained(model_name)
 
     # Sidebar with title and markdown
     st.sidebar.title("🧠 Mental Health Analysis")
     st.sidebar.markdown("""
     Analyze mental health symptoms using a **pre-trained AI model**.  
-    This tool predicts **Depression, Anxiety, PTSD, Bipolar Disorder, and Schizophrenia** based on text input.
+    This tool predicts **Depression and Anxiety** based on text input.
     """)
 
     # Main content
@@ -633,26 +579,48 @@ if selected == "Mental-Analysis":
 
     # User input
     user_input = st.text_area("Describe your symptoms (e.g., 'I feel hopeless and anxious all the time.'):")
-
+    
     if st.button("Analyze"):
         if user_input:
-            # Get predictions
-            results = classifier(user_input)
+            # Tokenize input
+            inputs = tokenizer(user_input, return_tensors="pt", truncation=True, padding=True)
 
-            # Extract labels and scores
-            labels = [res["label"] for res in results]
-            scores = [res["score"] for res in results]
+            # Get raw logits from the model
+            with torch.no_grad():
+                outputs = model(**inputs)
+            logits = outputs.logits
 
-            # Display results
+            # Apply sigmoid activation to get independent probabilities
+            probs = torch.sigmoid(logits).squeeze().tolist()
+
+            # Map to labels
+            label_mapping = {
+                0: "Depression",
+                1: "Anxiety"
+            }
+            predictions = {label_mapping[i]: round(probs[i] * 100, 2) for i in range(len(probs))}
+
+            # Display predictions
             st.write("### Predictions:")
-            for label, score in zip(labels, scores):
-                st.write(f"🩺 **{label}**: {round(score * 100, 2)}% confidence")
+            for label, score in predictions.items():
+                st.write(f"🩺 **{label}**: {score}% confidence")
 
-            # Create a bar chart
-            fig, ax = plt.subplots()
-            ax.barh(labels, scores, color=['blue', 'red', 'green', 'purple', 'orange'])
-            ax.set_xlabel("Confidence Score")
-            ax.set_title("Mental Health Analysis Results")
-            ax.set_xlim(0, 1)  # Ensure scores are between 0 and 1
+            # Sort for better visualization
+            sorted_labels = sorted(predictions.keys(), key=lambda x: predictions[x], reverse=True)
+            sorted_scores = [predictions[label] for label in sorted_labels]
+
+            # Plot using Seaborn
+            fig, ax = plt.subplots(figsize=(4, 2.5))  # Compact size
+            sns.barplot(x=sorted_scores, y=sorted_labels, palette="coolwarm", ax=ax)
+
+            # Labels & title
+            ax.set_xlabel("Risk Probability (%)")
+            ax.set_title("Mental Health Risk Assessment")
+            ax.set_xlim(0, 100)
+            
+            # Add percentages inside bars
+            for i, (score, label) in enumerate(zip(sorted_scores, sorted_labels)):
+                ax.text(score - 5, i, f"{score}%", va='center', ha='right', color='white', fontsize=10, fontweight='bold')
+
+            # Display the chart in a single column
             st.pyplot(fig)
-

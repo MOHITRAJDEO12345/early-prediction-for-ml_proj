@@ -173,5 +173,5 @@ Contributions are always welcome! Feel free to open an issue or submit a pull re
 
 For any questions or feedback, feel free to reach out:
 
-📧 Email: mohit.rajdeo@example.com  
+📧 Email: mohitrajdeo16deoghar@gmail.com  
 🐦 Twitter: [@mohitrajdeo](https://twitter.com/mohitrajdeo)

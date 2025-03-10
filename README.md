@@ -65,7 +65,9 @@ options = [
     'Asthma Prediction',
     'Cardiovascular Disease Prediction',
     'Stroke Prediction',
-    'Data Visualization'
+    'Sleep Health Analysis',
+    'Data Visualization',
+    'Text-based Disease Prediction'
 ]
 ```
 
@@ -81,6 +83,12 @@ options = [
 - **Asthma Model**: Uses preprocessed datasets to detect asthma likelihood.
 - **Cardiovascular Model**: XGBoost-based prediction for heart disease.
 - **Stroke Model**: Uses ML models to assess stroke risk factors.
+
+### 📝 Text-based Disease Prediction
+- Uses **distilbert-base-uncased** for text-based disease prediction.
+- Allows users to input symptoms via text or audio.
+- Predicts possible lifestyle diseases based on user input.
+- Provides graphical risk assessment using **Seaborn & Matplotlib**.
 
 ---
 

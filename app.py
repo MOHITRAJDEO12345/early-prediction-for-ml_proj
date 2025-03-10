@@ -36,7 +36,7 @@ with st.sidebar:
     
     selected = option_menu(
         menu_title="Navigation",
-        options=['Home','Checkbox-to-disease-predictor',  'AI Health Consultant', 'Mental-Analysis', 'Diabetes Prediction', 'Asthma Prediction', 'Cardiovascular Disease Prediction', 'Stroke Prediction', 'Data Visualization' ],
+        options=['Home','Checkbox-to-disease-predictor',  'AI Health Consultant', 'Mental-Analysis', 'Diabetes Prediction', 'Asthma Prediction', 'Cardiovascular Disease Prediction', 'Stroke Prediction','Sleep Health Analysis' 'Data Visualization' ],
         icons=['house', 'activity', 'lungs', 'heart-pulse', 'brain', 'bar-chart', 'chat'],
         menu_icon="cast",
         default_index=0,
@@ -97,7 +97,8 @@ if selected == 'Home':
     - [Diabetes Dataset](https://www.kaggle.com/datasets/mathchi/diabetes-data-set)  
     - [Cardiovascular Disease Dataset](https://www.kaggle.com/datasets/sulianova/cardiovascular-disease-dataset)  
     - [Sentiment Analysis for Mental Health](https://www.kaggle.com/datasets/suchintikasarkar/sentiment-analysis-for-mental-health)  
-
+    - [Sleep Health Analysis](https://www.kaggle.com/datasets/uom190346a/sleep-health-and-lifestyle-dataset)
+                
     The predictions are generated using **machine learning models** trained on these datasets, incorporating **evaluation metrics and graphical insights** to enhance interpretability.  
 
     However, this tool has **not undergone clinical validation** and should be used **for informational and educational purposes only**. It is not intended to serve as a substitute for professional medical diagnosis or treatment. Always consult a qualified healthcare provider for medical advice.
@@ -627,3 +628,82 @@ if selected == "Mental-Analysis":
             # Display the chart in a single column
             st.pyplot(fig)
 
+if selected == 'Sleep Health Analysis':
+    st.title("🌙 Sleep Health Analysis")
+    st.markdown("Analyze sleep patterns and health conditions using a **pre-trained AI model**.")
+    st.markdown("This tool predicts **Sleep Disorders** based on input data.")
+
+    import streamlit as st
+    import pandas as pd
+    import numpy as np
+    import pickle
+    from sklearn.preprocessing import LabelEncoder, StandardScaler
+
+    # Load the trained model
+    try:
+        with open('sleep_health/best_model.pkl', 'rb') as file:
+            model = pickle.load(file)
+    except FileNotFoundError:
+        st.error("Error: 'best_model.pkl' not found. Please upload the model file.")
+        st.stop()
+
+    # Load the scaler
+    try:
+        with open('sleep_health/scaler.pkl', 'rb') as file:
+            scaler = pickle.load(file)
+    except FileNotFoundError:
+        st.error("Error: 'scaler.pkl' not found. Please upload the scaler file.")
+        st.stop()
+
+    # Input fields for user data
+    gender = st.selectbox('Gender', ['Male', 'Female'])
+    age = st.number_input("Age", min_value=18, max_value=100)
+    occupation = st.selectbox("Occupation", ['Software Engineer', 'Teacher', 'Doctor', 'Business', 'Sales Representative', 'Scientist', 'Accountant', 'Engineer'])
+    sleep_duration = st.number_input("Sleep Duration (hours)", min_value=0.0, max_value=12.0)
+    quality_of_sleep = st.number_input('Quality of Sleep', min_value=1, max_value=5)
+    physical_activity_level = st.number_input('Physical Activity Level', min_value=1, max_value=5)
+    stress_level = st.number_input('Stress Level', min_value=1, max_value=5)
+    bmi_category = st.selectbox("BMI Category", ["Normal", "Overweight", "Obese"])
+    blood_pressure = st.number_input("Blood Pressure", min_value=0, max_value=200)
+    heart_rate = st.number_input("Heart Rate", min_value=0, max_value=200)
+    daily_steps = st.number_input("Daily Steps", min_value=0, max_value=50000)
+
+    # Create a button to trigger prediction
+    if st.button("Predict"):
+        # Prepare input data
+        input_data = pd.DataFrame({
+            'Gender': [gender],
+            'Age': [age],
+            'Occupation': [occupation],
+            'Sleep Duration': [sleep_duration],
+            'Quality of Sleep': [quality_of_sleep],
+            'Physical Activity Level': [physical_activity_level],
+            'Stress Level': [stress_level],
+            'BMI Category': [bmi_category],
+            'Blood Pressure': [blood_pressure],
+            'Heart Rate': [heart_rate],
+            'Daily Steps': [daily_steps]
+        })
+
+        # Preprocess the input data
+        try:
+            # Encode categorical features
+            input_data['Gender'] = LabelEncoder().fit_transform(input_data['Gender'])
+            input_data['Occupation'] = LabelEncoder().fit_transform(input_data['Occupation'])
+            input_data = pd.get_dummies(input_data, drop_first=True)
+
+            # Handle missing columns in the test set
+            missing_cols = set(X_train.columns) - set(input_data.columns)
+            for c in missing_cols:
+                input_data[c] = 0
+            input_data = input_data[X_train.columns]
+
+            # Scale the input data
+            input_data = scaler.transform(input_data)
+
+            # Make a prediction using the loaded model
+            prediction = model.predict(input_data)
+            predicted_class = le.inverse_transform(prediction)[0]  # Convert the prediction back to original label
+            st.write(f"Predicted Sleep Disorder: {predicted_class}")
+        except ValueError as e:  # Catch any errors that could occur with preprocessing
+            st.error(f"Error during prediction: {e}")

@@ -129,7 +129,8 @@ However, this tool has **not undergone clinical validation** and should be used 
 - http://colab.research.google.com/drive/11KO6cvyTeYY_v5PnYqTwheEupJtNjfCr?usp=sharing#scrollTo=7EyXbXJkPnqf
 - https://colab.research.google.com/drive/1-B7Q8hXHD0iIBvVldnLkvCiWGhJ2iYNL?usp=sharing
 - https://colab.research.google.com/drive/1inXO2_JvTw6fOXiJGaW_0pJvI_3sNo0T?usp=sharing
-- 
+- https://colab.research.google.com/drive/1NpwO0NBOKQBtUuN9cC-CXE4vuP5TCavY?usp=sharing
+- https://colab.research.google.com/drive/10W68SdZHS3IvJAjFTBoqEFI5g7USZVo9?usp=sharing
 
 ---
 

@@ -36,7 +36,7 @@ with st.sidebar:
     
     selected = option_menu(
         menu_title="Navigation",
-        options=['Home','Checkbox-to-disease-predictor',  'AI Health Consultant', 'Mental-Analysis', 'Diabetes Prediction', 'Asthma Prediction', 'Cardiovascular Disease Prediction', 'Stroke Prediction','Sleep Health Analysis' 'Data Visualization' ],
+        options=['Home','Text-based Disease Prediction', 'Checkbox-to-disease-predictor', 'AI Health Consultant', 'Mental-Analysis', 'Diabetes Prediction', 'Asthma Prediction', 'Cardiovascular Disease Prediction', 'Stroke Prediction', 'Sleep Health Analysis', 'Data Visualization'],
         icons=['house', 'activity', 'lungs', 'heart-pulse', 'brain', 'bar-chart', 'chat'],
         menu_icon="cast",
         default_index=0,
@@ -45,8 +45,9 @@ with st.sidebar:
             "icon": {"color": "#FF0000", "font-size": "20px"},  # Red icons
             "nav-link": {"font-size": "16px", "text-align": "left", "margin": "0px", "color": "#FFFFFF"},  # White text
             "nav-link-selected": {"background-color": "#FF0000", "color": "#FFFFFF"},
-        },
+        }
     )
+    
 
 # Utility function to safely convert input to float
 def safe_float(value, default=0.0):
@@ -669,41 +670,143 @@ if selected == 'Sleep Health Analysis':
     daily_steps = st.number_input("Daily Steps", min_value=0, max_value=50000)
 
     # Create a button to trigger prediction
-    if st.button("Predict"):
-        # Prepare input data
-        input_data = pd.DataFrame({
-            'Gender': [gender],
-            'Age': [age],
-            'Occupation': [occupation],
-            'Sleep Duration': [sleep_duration],
-            'Quality of Sleep': [quality_of_sleep],
-            'Physical Activity Level': [physical_activity_level],
-            'Stress Level': [stress_level],
-            'BMI Category': [bmi_category],
-            'Blood Pressure': [blood_pressure],
-            'Heart Rate': [heart_rate],
-            'Daily Steps': [daily_steps]
-        })
+    # if st.button("Predict"):
+    #     # Prepare input data
+    #     input_data = pd.DataFrame({
+    #         'Gender': [gender],
+    #         'Age': [age],
+    #         'Occupation': [occupation],
+    #         'Sleep Duration': [sleep_duration],
+    #         'Quality of Sleep': [quality_of_sleep],
+    #         'Physical Activity Level': [physical_activity_level],
+    #         'Stress Level': [stress_level],
+    #         'BMI Category': [bmi_category],
+    #         'Blood Pressure': [blood_pressure],
+    #         'Heart Rate': [heart_rate],
+    #         'Daily Steps': [daily_steps]
+    #     })
 
-        # Preprocess the input data
-        try:
-            # Encode categorical features
-            input_data['Gender'] = LabelEncoder().fit_transform(input_data['Gender'])
-            input_data['Occupation'] = LabelEncoder().fit_transform(input_data['Occupation'])
-            input_data = pd.get_dummies(input_data, drop_first=True)
+    #     # Preprocess the input data
+    #     try:
+    #         # Encode categorical features
+    #         input_data['Gender'] = LabelEncoder().fit_transform(input_data['Gender'])
+    #         input_data['Occupation'] = LabelEncoder().fit_transform(input_data['Occupation'])
+    #         input_data = pd.get_dummies(input_data, drop_first=True)
 
-            # Handle missing columns in the test set
-            missing_cols = set(X_train.columns) - set(input_data.columns)
-            for c in missing_cols:
-                input_data[c] = 0
-            input_data = input_data[X_train.columns]
+    #         X_train = 0
+    #         with open('sleep_health/columns.pkl', 'wb') as file:
+    #             pickle.dump(columns, file)            # Handle missing columns in the test set
+    #         missing_cols = set(X_train.columns) - set(input_data.columns)
+    #         for c in missing_cols:
+    #             input_data[c] = 0
+    #         input_data = input_data[X_train.columns]
 
-            # Scale the input data
-            input_data = scaler.transform(input_data)
+    #         # Scale the input data
+    #         input_data = scaler.transform(input_data)
 
-            # Make a prediction using the loaded model
-            prediction = model.predict(input_data)
-            predicted_class = le.inverse_transform(prediction)[0]  # Convert the prediction back to original label
-            st.write(f"Predicted Sleep Disorder: {predicted_class}")
-        except ValueError as e:  # Catch any errors that could occur with preprocessing
-            st.error(f"Error during prediction: {e}")
+    #         # Make a prediction using the loaded model
+    #         prediction = model.predict(input_data)
+    #         predicted_class = le.inverse_transform(prediction)[0]  # Convert the prediction back to original label
+    #         st.write(f"Predicted Sleep Disorder: {predicted_class}")
+    #     except ValueError as e:  # Catch any errors that could occur with preprocessing
+    #         st.error(f"Error during prediction: {e}")
+    
+if selected == 'Text-based Disease Prediction':
+    st.title("📝 Text-based Disease Prediction")
+    st.markdown("Enter your symptoms in the text area below, or use audio input, and the AI will predict possible lifestyle diseases.")
+
+    from transformers import AutoTokenizer, AutoModelForSequenceClassification
+    import torch
+    import speech_recognition as sr
+    from pydub import AudioSegment
+    from pydub.playback import play
+
+    # Define diseases and symptoms
+    diseases = {
+        "Diabetes": ["Frequent urination", "Increased thirst", "Unexplained weight loss", "Fatigue", "Blurred vision", "Slow-healing wounds", "Increased hunger", "Dry skin", "Numbness or tingling in hands/feet", "Recurring infections"],
+        "Hypertension": ["Headache", "Dizziness", "Chest pain", "Shortness of breath", "Nosebleeds", "Flushing", "Vision problems", "Irregular heartbeat", "Blood in urine", "Fatigue"],
+        "Obesity": ["Excess body fat", "Breathlessness", "Joint pain", "Increased sweating", "Low energy levels", "Sleep apnea", "Skin problems", "Back pain", "Difficulty with physical activity", "High blood pressure"],
+        "Cardiovascular Disease": ["Chest pain", "Shortness of breath", "Dizziness", "Irregular heartbeat", "Fatigue", "Swelling in legs/ankles", "Neck/jaw/throat/back pain", "Nausea", "Cold sweats", "Lightheadedness"],
+        "COPD": ["Chronic cough", "Shortness of breath", "Wheezing", "Chest tightness", "Frequent respiratory infections", "Bluish lips or fingernails", "Fatigue", "Unintended weight loss", "Swelling in ankles/feet/legs", "Difficulty sleeping"],
+        "Liver Disease": ["Jaundice", "Abdominal pain", "Swelling in legs", "Chronic fatigue", "Nausea", "Itchy skin", "Dark urine", "Pale stools", "Loss of appetite", "Easy bruising"],
+        "Kidney Disease": ["Swelling in legs", "Fatigue", "Loss of appetite", "Changes in urination", "Muscle cramps", "Nausea", "Difficulty concentrating", "Dry, itchy skin", "Shortness of breath", "High blood pressure"],
+        "Metabolic Syndrome": ["High blood sugar", "High blood pressure", "Increased waist size", "High cholesterol", "Fatigue", "Blurred vision", "Increased thirst", "Frequent urination", "Slow-healing wounds", "Skin tags"],
+        "Osteoarthritis": ["Joint pain", "Stiffness", "Swelling", "Reduced flexibility", "Bone spurs", "Grating sensation", "Tenderness", "Loss of joint space", "Muscle weakness", "Deformity"],
+        "Gastroesophageal Reflux Disease": ["Heartburn", "Acid reflux", "Difficulty swallowing", "Chronic cough", "Sore throat", "Chest pain", "Regurgitation", "Feeling of lump in throat", "Hoarseness", "Bad breath"],
+        "Depression": ["Persistent sadness", "Loss of interest", "Sleep disturbances", "Fatigue", "Difficulty concentrating", "Changes in appetite", "Feelings of worthlessness", "Irritability", "Physical aches and pains", "Thoughts of death or suicide"],
+        "Sleep Apnea": ["Loud snoring", "Pauses in breathing", "Daytime drowsiness", "Morning headaches", "Irritability", "Dry mouth upon waking", "Difficulty staying asleep", "Attention problems", "Mood changes", "High blood pressure"],
+        "Asthma": ["Wheezing", "Shortness of breath", "Chest tightness", "Coughing", "Difficulty sleeping", "Fatigue", "Anxiety", "Rapid breathing", "Difficulty speaking", "Blue lips or fingernails"],
+        "Rheumatoid Arthritis": ["Joint pain", "Swelling", "Stiffness", "Fatigue", "Fever", "Loss of appetite", "Dry eyes and mouth", "Firm bumps under the skin", "Numbness and tingling", "Anemia"],
+        "Alzheimer's Disease": ["Memory loss", "Difficulty planning or solving problems", "Trouble completing familiar tasks", "Confusion with time or place", "Vision problems", "Problems with words", "Misplacing things", "Poor judgment", "Withdrawal from social activities", "Mood and personality changes"]
+    }
+
+    # Load the pre-trained model and tokenizer
+    model_name = "distilbert-base-uncased"
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=len(diseases))
+
+    # Create a text area for user input
+    user_input = st.text_area("Describe your symptoms (e.g., 'I feel tired all the time and have frequent headaches.'):")
+
+    # Audio input
+    st.markdown("### Or use audio input:")
+    audio_file = st.file_uploader("Upload an audio file", type=["wav", "mp3"])
+
+    if audio_file is not None:
+        # Convert audio file to text
+        recognizer = sr.Recognizer()
+        audio = AudioSegment.from_file(audio_file)
+        audio.export("temp.wav", format="wav")
+        with sr.AudioFile("temp.wav") as source:
+            audio_data = recognizer.record(source)
+            try:
+                user_input = recognizer.recognize_google(audio_data)
+                st.write(f"Recognized Text: {user_input}")
+            except sr.UnknownValueError:
+                st.write("Google Speech Recognition could not understand the audio.")
+            except sr.RequestError as e:
+                st.write(f"Could not request results from Google Speech Recognition service; {e}")
+
+    if st.button("Predict Disease"):
+        if user_input:
+            # Tokenize and preprocess the input text
+            inputs = tokenizer(user_input, return_tensors="pt", truncation=True, padding=True)
+
+            # Get raw logits from the model
+            with torch.no_grad():
+                outputs = model(**inputs)
+            logits = outputs.logits
+
+            # Apply softmax to get probabilities
+            probs = torch.softmax(logits, dim=1).squeeze().tolist()
+
+            # Map to labels
+            disease_labels = list(diseases.keys())
+            predictions = {disease_labels[i]: round(probs[i] * 100, 2) for i in range(len(probs))}
+
+            # Display predictions
+            st.write("### Predictions:")
+            for label, score in predictions.items():
+                st.write(f"🩺 **{label}**: {score}% confidence")
+
+            # Sort for better visualization
+            sorted_labels = sorted(predictions.keys(), key=lambda x: predictions[x], reverse=True)
+            sorted_scores = [predictions[label] for label in sorted_labels]
+
+            # Plot using Seaborn
+            fig, ax = plt.subplots(figsize=(4, 2.5))  # Compact size
+            sns.barplot(x=sorted_scores, y=sorted_labels, palette="coolwarm", ax=ax)
+
+            # Labels & title
+            ax.set_xlabel("Risk Probability (%)")
+            ax.set_title("Disease Risk Assessment")
+            ax.set_xlim(0, 100)
+            
+            # Add percentages inside bars
+            for i, (score, label) in enumerate(zip(sorted_scores, sorted_labels)):
+                ax.text(score - 5, i, f"{score}%", va='center', ha='right', color='white', fontsize=10, fontweight='bold')
+
+            # Display the chart in a single column
+            st.pyplot(fig)
+        else:
+            st.write("⚠️ Please enter your symptoms.")

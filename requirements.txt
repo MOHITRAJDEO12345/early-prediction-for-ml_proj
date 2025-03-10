@@ -9,3 +9,5 @@ google-generativeai
 python-dotenv
 torch 
 transformers
+SpeechRecognition
+pydub

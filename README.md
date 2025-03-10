@@ -51,6 +51,60 @@ This tool provides **early prediction and analysis** for various health conditio
 
 ---
 
+## 🖥 Application Sections
+
+The application includes the following navigation options:
+
+```python
+options = [
+    'Home',
+    'Checkbox-to-disease-predictor',
+    'AI Health Consultant',
+    'Mental-Analysis',
+    'Diabetes Prediction',
+    'Asthma Prediction',
+    'Cardiovascular Disease Prediction',
+    'Stroke Prediction',
+    'Data Visualization'
+]
+```
+
+### 🧠 Mental Health Analysis
+- NOTE: the trained model was not upto mark so we switched to gated transformer model
+- Uses **mental/mental-roberta-base** for sentiment-based mental health assessment.
+- Predicts **Depression and Anxiety** based on user input.
+- Provides graphical risk assessment using **Seaborn & Matplotlib**.
+
+### 🔬 Disease Prediction Models
+- NOTE: only those diseases have been taken that can be predicted wihtout diagnostic results and some of the features have been discared for training
+- **Diabetes Model**: Predicts diabetes risk using medical indicators.
+- **Asthma Model**: Uses preprocessed datasets to detect asthma likelihood.
+- **Cardiovascular Model**: XGBoost-based prediction for heart disease.
+- **Stroke Model**: Uses ML models to assess stroke risk factors.
+
+---
+
+## 📸 Screenshots & UI Preview
+
+🔍 **Streamlit Application Interface:**
+
+- NOTE: for functionality purpose only
+- YOUTUBE: https://youtu.be/abrRqceVuDU
+![Streamlit UI](screenshots/streamlit.png)
+
+📊 **Data Visualization Example:**
+- NOTE: currently showing datasets 
+it will be used for visualizing anomalies in user predictions it will become personalized
+![Data Visualization](screenshots/data_visual.png)
+
+🖥 **Separate Frontend Interface:**
+- NOTE: the frontend is currently not connected with ml models and it may behave wrongly
+- WORKING: https://v0.dev/chat/community/lifestyle-disease-prediction-ADp1mOc0hKg
+- YOUTUBE: https://youtu.be/DU4FW-8hSoU
+![Frontend UI](screenshots/frontend.png)
+
+---
+
 ## ⚠️ Disclaimer
 
 This application has been developed using real-world healthcare datasets sourced from Kaggle:
@@ -67,9 +121,38 @@ However, this tool has **not undergone clinical validation** and should be used 
 
 ---
 
-## 📜 License
+# colab
+- https://colab.research.google.com/drive/1DpOH7KgTWubr5qQjj13EDqxIqsbPLDQe?usp=sharing#scrollTo=EgbDF0U5L1l2
+- https://colab.research.google.com/drive/1GI7Z1GPPUi67X6UssCQVJXr_QoysfJrz#scrollTo=XkcDpRRzFCIX
+- https://colab.research.google.com/drive/1eZIBboyY_x0ZsJp5G10XrFFu4aG4eCuf#scrollTo=3NDJOlrEpmoL
+- http://colab.research.google.com/drive/11KO6cvyTeYY_v5PnYqTwheEupJtNjfCr?usp=sharing#scrollTo=7EyXbXJkPnqf
+- https://colab.research.google.com/drive/1-B7Q8hXHD0iIBvVldnLkvCiWGhJ2iYNL?usp=sharing
+- https://colab.research.google.com/drive/1inXO2_JvTw6fOXiJGaW_0pJvI_3sNo0T?usp=sharing
+- 
 
-This project is open-source and available under the **MIT License**.
+---
+
+## 📌 Modular Features (Pending Integration)
+
+Several functionalities have been implemented but are pending Streamlit integration for optimization:
+
+✅ **User Login & Basic Inputs**: Secure authentication and user profile management.
+✅ **Personalized Email Reports**: Automated daily, weekly, and monthly health insights.
+✅ **Anomaly Visualization**: Analyzes past predictions to detect anomalies.
+✅ **Workout Plans**: AI-driven personalized workout routines based on health data.
+✅ **Sleep Analysis**: AI-powered sleep tracking and recommendations.
+✅ **Medication Adherence**: Reminders and tracking for prescribed medications.
+✅ **Nutrition Recommendations**: AI-based meal planning and dietary suggestions.
+✅ **Community & Resources**: A section for health articles, discussions, and expert Q&A.
+
+---
+
+## 🔬 Ongoing Research & Future Enhancements
+
+🚧 **Fitbit API Integration** – Real-time health monitoring with wearable devices.
+🚧 **LSTM Models for Realtime Fitbit Data** – Developing deep learning models for dynamic health tracking.
+🚧 **Enhanced Mental Health Analysis** – Exploring transformer-based sentiment models for deeper insights.
+🚧 **Hybrid ML & NLP Systems** – Combining structured health data with unstructured text for more accurate predictions.
 
 ---
 
@@ -90,6 +173,5 @@ Contributions are always welcome! Feel free to open an issue or submit a pull re
 
 For any questions or feedback, feel free to reach out:
 
-📧 Email: mohit.rajdeo@example.com  
+📧 Email: mohitrajdeo16deoghar@gmail.com  
 🐦 Twitter: [@mohitrajdeo](https://twitter.com/mohitrajdeo)
-

@@ -95,7 +95,8 @@ options = [
 📊 **Data Visualization Example:**
 - NOTE: currently showing datasets 
 it will be used for visualizing anomalies in user predictions it will become personalized
-![Data Visualization](screenshots/data_visual.png)(screenshots/user_graph.png)
+![Data Visualization](screenshots/data_visual.png)
+![User Graph](screenshots/user_graph.png)
 
 🖥 **Separate Frontend Interface:**
 - NOTE: the frontend is currently not connected with ml models and it may behave wrongly

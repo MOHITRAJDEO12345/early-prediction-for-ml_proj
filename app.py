@@ -555,10 +555,6 @@ if selected == 'Checkbox-to-disease-predictor':
             st.write("⚠️ Please select at least one symptom.")
 
 
-import streamlit as st
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
 import torch
 from transformers import pipeline, AutoModelForSequenceClassification, AutoTokenizer
 
@@ -711,102 +707,199 @@ if selected == 'Sleep Health Analysis':
     #     except ValueError as e:  # Catch any errors that could occur with preprocessing
     #         st.error(f"Error during prediction: {e}")
     
-if selected == 'Text-based Disease Prediction':
-    st.title("📝 Text-based Disease Prediction")
-    st.markdown("Enter your symptoms in the text area below, or use audio input, and the AI will predict possible lifestyle diseases.")
 
-    from transformers import AutoTokenizer, AutoModelForSequenceClassification
-    import torch
-    import speech_recognition as sr
-    from pydub import AudioSegment
-    from pydub.playback import play
 
-    # Define diseases and symptoms
-    diseases = {
-        "Diabetes": ["Frequent urination", "Increased thirst", "Unexplained weight loss", "Fatigue", "Blurred vision", "Slow-healing wounds", "Increased hunger", "Dry skin", "Numbness or tingling in hands/feet", "Recurring infections"],
-        "Hypertension": ["Headache", "Dizziness", "Chest pain", "Shortness of breath", "Nosebleeds", "Flushing", "Vision problems", "Irregular heartbeat", "Blood in urine", "Fatigue"],
-        "Obesity": ["Excess body fat", "Breathlessness", "Joint pain", "Increased sweating", "Low energy levels", "Sleep apnea", "Skin problems", "Back pain", "Difficulty with physical activity", "High blood pressure"],
-        "Cardiovascular Disease": ["Chest pain", "Shortness of breath", "Dizziness", "Irregular heartbeat", "Fatigue", "Swelling in legs/ankles", "Neck/jaw/throat/back pain", "Nausea", "Cold sweats", "Lightheadedness"],
-        "COPD": ["Chronic cough", "Shortness of breath", "Wheezing", "Chest tightness", "Frequent respiratory infections", "Bluish lips or fingernails", "Fatigue", "Unintended weight loss", "Swelling in ankles/feet/legs", "Difficulty sleeping"],
-        "Liver Disease": ["Jaundice", "Abdominal pain", "Swelling in legs", "Chronic fatigue", "Nausea", "Itchy skin", "Dark urine", "Pale stools", "Loss of appetite", "Easy bruising"],
-        "Kidney Disease": ["Swelling in legs", "Fatigue", "Loss of appetite", "Changes in urination", "Muscle cramps", "Nausea", "Difficulty concentrating", "Dry, itchy skin", "Shortness of breath", "High blood pressure"],
-        "Metabolic Syndrome": ["High blood sugar", "High blood pressure", "Increased waist size", "High cholesterol", "Fatigue", "Blurred vision", "Increased thirst", "Frequent urination", "Slow-healing wounds", "Skin tags"],
-        "Osteoarthritis": ["Joint pain", "Stiffness", "Swelling", "Reduced flexibility", "Bone spurs", "Grating sensation", "Tenderness", "Loss of joint space", "Muscle weakness", "Deformity"],
-        "Gastroesophageal Reflux Disease": ["Heartburn", "Acid reflux", "Difficulty swallowing", "Chronic cough", "Sore throat", "Chest pain", "Regurgitation", "Feeling of lump in throat", "Hoarseness", "Bad breath"],
-        "Depression": ["Persistent sadness", "Loss of interest", "Sleep disturbances", "Fatigue", "Difficulty concentrating", "Changes in appetite", "Feelings of worthlessness", "Irritability", "Physical aches and pains", "Thoughts of death or suicide"],
-        "Sleep Apnea": ["Loud snoring", "Pauses in breathing", "Daytime drowsiness", "Morning headaches", "Irritability", "Dry mouth upon waking", "Difficulty staying asleep", "Attention problems", "Mood changes", "High blood pressure"],
-        "Asthma": ["Wheezing", "Shortness of breath", "Chest tightness", "Coughing", "Difficulty sleeping", "Fatigue", "Anxiety", "Rapid breathing", "Difficulty speaking", "Blue lips or fingernails"],
-        "Rheumatoid Arthritis": ["Joint pain", "Swelling", "Stiffness", "Fatigue", "Fever", "Loss of appetite", "Dry eyes and mouth", "Firm bumps under the skin", "Numbness and tingling", "Anemia"],
-        "Alzheimer's Disease": ["Memory loss", "Difficulty planning or solving problems", "Trouble completing familiar tasks", "Confusion with time or place", "Vision problems", "Problems with words", "Misplacing things", "Poor judgment", "Withdrawal from social activities", "Mood and personality changes"]
-    }
 
-    # Load the pre-trained model and tokenizer
-    model_name = "distilbert-base-uncased"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=len(diseases))
+# if selected == 'Text-based Disease Prediction':
+#     st.title("📝 Text-based Disease Prediction")
+#     st.markdown("Enter your symptoms in the text area below, or use audio input, and the AI will predict possible lifestyle diseases.")
 
-    # Create a text area for user input
-    user_input = st.text_area("Describe your symptoms (e.g., 'I feel tired all the time and have frequent headaches.'):")
+#     from transformers import AutoTokenizer, AutoModelForSequenceClassification
+#     import torch
+#     import speech_recognition as sr
+#     from pydub import AudioSegment
+#     from pydub.playback import play
 
-    # Audio input
-    st.markdown("### Or use audio input:")
-    audio_file = st.file_uploader("Upload an audio file", type=["wav", "mp3"])
+#     # Define diseases and symptoms
+#     diseases = {
+#         "Diabetes": ["Frequent urination", "Increased thirst", "Unexplained weight loss", "Fatigue", "Blurred vision", "Slow-healing wounds", "Increased hunger", "Dry skin", "Numbness or tingling in hands/feet", "Recurring infections"],
+#         "Hypertension": ["Headache", "Dizziness", "Chest pain", "Shortness of breath", "Nosebleeds", "Flushing", "Vision problems", "Irregular heartbeat", "Blood in urine", "Fatigue"],
+#         "Obesity": ["Excess body fat", "Breathlessness", "Joint pain", "Increased sweating", "Low energy levels", "Sleep apnea", "Skin problems", "Back pain", "Difficulty with physical activity", "High blood pressure"],
+#         "Cardiovascular Disease": ["Chest pain", "Shortness of breath", "Dizziness", "Irregular heartbeat", "Fatigue", "Swelling in legs/ankles", "Neck/jaw/throat/back pain", "Nausea", "Cold sweats", "Lightheadedness"],
+#         "COPD": ["Chronic cough", "Shortness of breath", "Wheezing", "Chest tightness", "Frequent respiratory infections", "Bluish lips or fingernails", "Fatigue", "Unintended weight loss", "Swelling in ankles/feet/legs", "Difficulty sleeping"],
+#         "Liver Disease": ["Jaundice", "Abdominal pain", "Swelling in legs", "Chronic fatigue", "Nausea", "Itchy skin", "Dark urine", "Pale stools", "Loss of appetite", "Easy bruising"],
+#         "Kidney Disease": ["Swelling in legs", "Fatigue", "Loss of appetite", "Changes in urination", "Muscle cramps", "Nausea", "Difficulty concentrating", "Dry, itchy skin", "Shortness of breath", "High blood pressure"],
+#         "Metabolic Syndrome": ["High blood sugar", "High blood pressure", "Increased waist size", "High cholesterol", "Fatigue", "Blurred vision", "Increased thirst", "Frequent urination", "Slow-healing wounds", "Skin tags"],
+#         "Osteoarthritis": ["Joint pain", "Stiffness", "Swelling", "Reduced flexibility", "Bone spurs", "Grating sensation", "Tenderness", "Loss of joint space", "Muscle weakness", "Deformity"],
+#         "Gastroesophageal Reflux Disease": ["Heartburn", "Acid reflux", "Difficulty swallowing", "Chronic cough", "Sore throat", "Chest pain", "Regurgitation", "Feeling of lump in throat", "Hoarseness", "Bad breath"],
+#         "Depression": ["Persistent sadness", "Loss of interest", "Sleep disturbances", "Fatigue", "Difficulty concentrating", "Changes in appetite", "Feelings of worthlessness", "Irritability", "Physical aches and pains", "Thoughts of death or suicide"],
+#         "Sleep Apnea": ["Loud snoring", "Pauses in breathing", "Daytime drowsiness", "Morning headaches", "Irritability", "Dry mouth upon waking", "Difficulty staying asleep", "Attention problems", "Mood changes", "High blood pressure"],
+#         "Asthma": ["Wheezing", "Shortness of breath", "Chest tightness", "Coughing", "Difficulty sleeping", "Fatigue", "Anxiety", "Rapid breathing", "Difficulty speaking", "Blue lips or fingernails"],
+#         "Rheumatoid Arthritis": ["Joint pain", "Swelling", "Stiffness", "Fatigue", "Fever", "Loss of appetite", "Dry eyes and mouth", "Firm bumps under the skin", "Numbness and tingling", "Anemia"],
+#         "Alzheimer's Disease": ["Memory loss", "Difficulty planning or solving problems", "Trouble completing familiar tasks", "Confusion with time or place", "Vision problems", "Problems with words", "Misplacing things", "Poor judgment", "Withdrawal from social activities", "Mood and personality changes"]
+#     }
 
-    if audio_file is not None:
-        # Convert audio file to text
-        recognizer = sr.Recognizer()
-        audio = AudioSegment.from_file(audio_file)
-        audio.export("temp.wav", format="wav")
-        with sr.AudioFile("temp.wav") as source:
-            audio_data = recognizer.record(source)
-            try:
-                user_input = recognizer.recognize_google(audio_data)
-                st.write(f"Recognized Text: {user_input}")
-            except sr.UnknownValueError:
-                st.write("Google Speech Recognition could not understand the audio.")
-            except sr.RequestError as e:
-                st.write(f"Could not request results from Google Speech Recognition service; {e}")
+#     # Load the pre-trained model and tokenizer
+#     model_name = "distilbert-base-uncased"
+#     tokenizer = AutoTokenizer.from_pretrained(model_name)
+#     model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=len(diseases))
 
-    if st.button("Predict Disease"):
-        if user_input:
-            # Tokenize and preprocess the input text
-            inputs = tokenizer(user_input, return_tensors="pt", truncation=True, padding=True)
+#     # Create a text area for user input
+#     user_input = st.text_area("Describe your symptoms (e.g., 'I feel tired all the time and have frequent headaches.'):")
 
-            # Get raw logits from the model
-            with torch.no_grad():
-                outputs = model(**inputs)
-            logits = outputs.logits
+#     # Audio input
+#     st.markdown("### Or use audio input:")
+#     audio_file = st.file_uploader("Upload an audio file", type=["wav", "mp3"])
 
-            # Apply softmax to get probabilities
-            probs = torch.softmax(logits, dim=1).squeeze().tolist()
+#     if audio_file is not None:
+#         # Convert audio file to text
+#         recognizer = sr.Recognizer()
+#         audio = AudioSegment.from_file(audio_file)
+#         audio.export("temp.wav", format="wav")
+#         with sr.AudioFile("temp.wav") as source:
+#             audio_data = recognizer.record(source)
+#             try:
+#                 user_input = recognizer.recognize_google(audio_data)
+#                 st.write(f"Recognized Text: {user_input}")
+#             except sr.UnknownValueError:
+#                 st.write("Google Speech Recognition could not understand the audio.")
+#             except sr.RequestError as e:
+#                 st.write(f"Could not request results from Google Speech Recognition service; {e}")
 
-            # Map to labels
-            disease_labels = list(diseases.keys())
-            predictions = {disease_labels[i]: round(probs[i] * 100, 2) for i in range(len(probs))}
+#     if st.button("Predict Disease"):
+#         if user_input:
+#             # Tokenize and preprocess the input text
+#             inputs = tokenizer(user_input, return_tensors="pt", truncation=True, padding=True)
 
-            # Display predictions
-            st.write("### Predictions:")
-            for label, score in predictions.items():
-                st.write(f"🩺 **{label}**: {score}% confidence")
+#             # Get raw logits from the model
+#             with torch.no_grad():
+#                 outputs = model(**inputs)
+#             logits = outputs.logits
 
-            # Sort for better visualization
-            sorted_labels = sorted(predictions.keys(), key=lambda x: predictions[x], reverse=True)
-            sorted_scores = [predictions[label] for label in sorted_labels]
+#             # Apply softmax to get probabilities
+#             probs = torch.softmax(logits, dim=1).squeeze().tolist()
 
-            # Plot using Seaborn
-            fig, ax = plt.subplots(figsize=(4, 2.5))  # Compact size
-            sns.barplot(x=sorted_scores, y=sorted_labels, palette="coolwarm", ax=ax)
+#             # Map to labels
+#             disease_labels = list(diseases.keys())
+#             predictions = {disease_labels[i]: round(probs[i] * 100, 2) for i in range(len(probs))}
 
-            # Labels & title
-            ax.set_xlabel("Risk Probability (%)")
-            ax.set_title("Disease Risk Assessment")
-            ax.set_xlim(0, 100)
+#             # Display predictions
+#             st.write("### Predictions:")
+#             for label, score in predictions.items():
+#                 st.write(f"🩺 **{label}**: {score}% confidence")
+
+#             # Sort for better visualization
+#             sorted_labels = sorted(predictions.keys(), key=lambda x: predictions[x], reverse=True)
+#             sorted_scores = [predictions[label] for label in sorted_labels]
+
+#             # Plot using Seaborn
+#             fig, ax = plt.subplots(figsize=(4, 2.5))  # Compact size
+#             sns.barplot(x=sorted_scores, y=sorted_labels, palette="coolwarm", ax=ax)
+
+#             # Labels & title
+#             ax.set_xlabel("Risk Probability (%)")
+#             ax.set_title("Disease Risk Assessment")
+#             ax.set_xlim(0, 100)
             
-            # Add percentages inside bars
-            for i, (score, label) in enumerate(zip(sorted_scores, sorted_labels)):
-                ax.text(score - 5, i, f"{score}%", va='center', ha='right', color='white', fontsize=10, fontweight='bold')
+#             # Add percentages inside bars
+#             for i, (score, label) in enumerate(zip(sorted_scores, sorted_labels)):
+#                 ax.text(score - 5, i, f"{score}%", va='center', ha='right', color='white', fontsize=10, fontweight='bold')
 
-            # Display the chart in a single column
-            st.pyplot(fig)
-        else:
-            st.write("⚠️ Please enter your symptoms.")
+#             # Display the chart in a single column
+#             st.pyplot(fig)
+#         else:
+#             st.write("⚠️ Please enter your symptoms.")
+
+
+
+
+# if selected == 'Text-based Disease Prediction':
+#     st.title("📝 Text-based Disease Prediction")
+#     st.markdown("Enter your symptoms in the text area below, or use audio input, and the AI will predict possible lifestyle diseases.")
+
+#     import os
+#     import google.generativeai as genai
+#     import speech_recognition as sr
+#     from pydub import AudioSegment
+#     from pydub.playback import play
+
+#     # Configure the Gemini API
+#     genai.configure(api_key="AIzaSyD9x7Kz8adDo6-nVyk9MAQjlwD4lTeKc84")
+
+#     # Define diseases and symptoms
+#     diseases = {
+#         "Diabetes": ["Frequent urination", "Increased thirst", "Unexplained weight loss", "Fatigue", "Blurred vision", "Slow-healing wounds", "Increased hunger", "Dry skin", "Numbness or tingling in hands/feet", "Recurring infections"],
+#         "Hypertension": ["Headache", "Dizziness", "Chest pain", "Shortness of breath", "Nosebleeds", "Flushing", "Vision problems", "Irregular heartbeat", "Blood in urine", "Fatigue"],
+#         "Obesity": ["Excess body fat", "Breathlessness", "Joint pain", "Increased sweating", "Low energy levels", "Sleep apnea", "Skin problems", "Back pain", "Difficulty with physical activity", "High blood pressure"],
+#         "Cardiovascular Disease": ["Chest pain", "Shortness of breath", "Dizziness", "Irregular heartbeat", "Fatigue", "Swelling in legs/ankles", "Neck/jaw/throat/back pain", "Nausea", "Cold sweats", "Lightheadedness"],
+#         "COPD": ["Chronic cough", "Shortness of breath", "Wheezing", "Chest tightness", "Frequent respiratory infections", "Bluish lips or fingernails", "Fatigue", "Unintended weight loss", "Swelling in ankles/feet/legs", "Difficulty sleeping"],
+#         "Liver Disease": ["Jaundice", "Abdominal pain", "Swelling in legs", "Chronic fatigue", "Nausea", "Itchy skin", "Dark urine", "Pale stools", "Loss of appetite", "Easy bruising"],
+#         "Kidney Disease": ["Swelling in legs", "Fatigue", "Loss of appetite", "Changes in urination", "Muscle cramps", "Nausea", "Difficulty concentrating", "Dry, itchy skin", "Shortness of breath", "High blood pressure"],
+#         "Metabolic Syndrome": ["High blood sugar", "High blood pressure", "Increased waist size", "High cholesterol", "Fatigue", "Blurred vision", "Increased thirst", "Frequent urination", "Slow-healing wounds", "Skin tags"],
+#         "Osteoarthritis": ["Joint pain", "Stiffness", "Swelling", "Reduced flexibility", "Bone spurs", "Grating sensation", "Tenderness", "Loss of joint space", "Muscle weakness", "Deformity"],
+#         "Gastroesophageal Reflux Disease": ["Heartburn", "Acid reflux", "Difficulty swallowing", "Chronic cough", "Sore throat", "Chest pain", "Regurgitation", "Feeling of lump in throat", "Hoarseness", "Bad breath"],
+#         "Depression": ["Persistent sadness", "Loss of interest", "Sleep disturbances", "Fatigue", "Difficulty concentrating", "Changes in appetite", "Feelings of worthlessness", "Irritability", "Physical aches and pains", "Thoughts of death or suicide"],
+#         "Sleep Apnea": ["Loud snoring", "Pauses in breathing", "Daytime drowsiness", "Morning headaches", "Irritability", "Dry mouth upon waking", "Difficulty staying asleep", "Attention problems", "Mood changes", "High blood pressure"],
+#         "Asthma": ["Wheezing", "Shortness of breath", "Chest tightness", "Coughing", "Difficulty sleeping", "Fatigue", "Anxiety", "Rapid breathing", "Difficulty speaking", "Blue lips or fingernails"],
+#         "Rheumatoid Arthritis": ["Joint pain", "Swelling", "Stiffness", "Fatigue", "Fever", "Loss of appetite", "Dry eyes and mouth", "Firm bumps under the skin", "Numbness and tingling", "Anemia"],
+#         "Alzheimer's Disease": ["Memory loss", "Difficulty planning or solving problems", "Trouble completing familiar tasks", "Confusion with time or place", "Vision problems", "Problems with words", "Misplacing things", "Poor judgment", "Withdrawal from social activities", "Mood and personality changes"]
+#     }
+
+#     # Create a text area for user input
+#     user_input = st.text_area("Describe your symptoms (e.g., 'I feel tired all the time and have frequent headaches.'):")
+
+#     # Audio input
+#     st.markdown("### Or use audio input:")
+#     audio_file = st.file_uploader("Upload an audio file", type=["wav", "mp3"])
+
+#     if audio_file is not None:
+#         # Convert audio file to text
+#         recognizer = sr.Recognizer()
+#         audio = AudioSegment.from_file(audio_file)
+#         audio.export("temp.wav", format="wav")
+#         with sr.AudioFile("temp.wav") as source:
+#             audio_data = recognizer.record(source)
+#             try:
+#                 user_input = recognizer.recognize_google(audio_data)
+#                 st.write(f"Recognized Text: {user_input}")
+#             except sr.UnknownValueError:
+#                 st.write("Google Speech Recognition could not understand the audio.")
+#             except sr.RequestError as e:
+#                 st.write(f"Could not request results from Google Speech Recognition service; {e}")
+
+#     if st.button("Predict Disease"):
+#         if user_input:
+#             # Use Gemini model to generate predictions
+#             model = genai.GenerativeModel("gemini-2.0-flash-lite")
+#             response = model.generate_content(user_input)
+
+#             if response and hasattr(response, "text"):
+#                 predictions = response.text
+#             else:
+#                 predictions = "I'm sorry, I couldn't generate a response."
+
+#             # Display predictions
+#             st.write("### Predictions:")
+#             st.write(predictions)
+
+#             # Sort for better visualization
+#             sorted_labels = sorted(predictions.keys(), key=lambda x: predictions[x], reverse=True)
+#             sorted_scores = [predictions[label] for label in sorted_labels]
+
+#             # Plot using Seaborn
+#             fig, ax = plt.subplots(figsize=(4, 2.5))  # Compact size
+#             sns.barplot(x=sorted_scores, y=sorted_labels, palette="coolwarm", ax=ax)
+
+#             # Labels & title
+#             ax.set_xlabel("Risk Probability (%)")
+#             ax.set_title("Disease Risk Assessment")
+#             ax.set_xlim(0, 100)
+            
+#             # Add percentages inside bars
+#             for i, (score, label) in enumerate(zip(sorted_scores, sorted_labels)):
+#                 ax.text(score - 5, i, f"{score}%", va='center', ha='right', color='white', fontsize=10, fontweight='bold')
+
+#             # Display the chart in a single column
+#             st.pyplot(fig)
+#         else:
+#             st.write("⚠️ Please enter your symptoms.")

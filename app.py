@@ -388,7 +388,7 @@ if selected == 'AI Health Consultant':
     st.markdown("### Discuss Your Health Concerns with Our AI-powered Chatbot")
     st.write("Ask about **Diabetes, Asthma, Stroke, Cardiovascular Disease, or Mental Health.**")
 
-    genai.configure(api_key="AIzaSyD9x7Kz8adDo6-nVyk9MAQjlwD4lTeKc84")
+    genai.configure(api_key="AIzaSyAwyi9c5OdvLoWrv5lFi1jZDEYwuprQAKE")
 
     # Custom Styling
     st.markdown("""

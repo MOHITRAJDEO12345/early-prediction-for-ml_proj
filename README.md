@@ -288,7 +288,7 @@ options = [
 
 🔍 **Streamlit Application Interface:**
 - NOTE: for functionality purpose only
-- YOUTUBE: https://youtu.be/abrRqceVuDU
+- YOUTUBE: https://youtu.be/zZGaMnGLX0U?si=0X5MN0Zp6bENcmUv
 ![Streamlit UI](screenshots/streamlit.png)
 
 📊 **Data Visualization Example:**

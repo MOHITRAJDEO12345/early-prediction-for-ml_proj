@@ -1,4 +1,4 @@
-# 🩺 AI-Powered Health & Lifestyle Disease Prediction
+<!-- # 🩺 AI-Powered Health & Lifestyle Disease Prediction
 
 Welcome to the **AI-Powered Health Prediction System**! 🚀
 
@@ -186,4 +186,161 @@ Contributions are always welcome! Feel free to open an issue or submit a pull re
 For any questions or feedback, feel free to reach out:
 
 📧 Email: mohitrajdeo16deoghar@gmail.com  
+🐦 Twitter: [@mohitrajdeo](https://twitter.com/mohitrajdeo) -->
+
+
+
+# 🩺 Early Prediction of Health & Lifestyle Diseases
+
+Welcome to the **AI-Powered Health Prediction System**! 🚀
+
+This tool provides **early prediction and analysis** for various health conditions using **Machine Learning & NLP**. It assists users in understanding potential health risks based on their lifestyle, medical indicators, and symptoms.
+
+---
+
+## 🏥 Available Features:
+
+✅ **Diabetes Prediction** – Predict diabetes risk using medical indicators.
+
+✅ **Hypertension Prediction** – Assess the risk of high blood pressure.
+
+✅ **Cardiovascular Disease Prediction** – XGBoost-based prediction for heart disease.
+
+✅ **Stroke Prediction** – Machine Learning-based stroke risk analysis.
+
+✅ **Asthma Prediction** – Detect asthma likelihood using preprocessed datasets.
+
+✅ **Sleep Health Analysis** – AI-driven analysis of sleep patterns and health.
+
+✅ **Mental Health Assessment** – Sentiment-based analysis using **mental-roberta-base**.
+
+✅ **Medical Consultant AI Chatbot** – Ask health-related questions for AI-driven insights.
+
+✅ **Data Visualization** – Graphical representation of health trends and anomalies.
+
+👉 **Select an option from the sidebar to proceed!**
+
+---
+
+## 🚀 Quick Start Guide
+
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/MOHITRAJDEO12345/early-prediction-for-ml_proj.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd early-prediction-for-ml_proj
+   ```
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Run the application:
+   ```bash
+   streamlit run app.py
+   ```
+
+---
+
+## 🖥 Application Sections
+
+The application includes the following navigation options:
+
+```python
+options = [
+    'Home',
+    'Diabetes Prediction',
+    'Hypertension Prediction',
+    'Cardiovascular Disease Prediction',
+    'Stroke Prediction',
+    'Asthma Prediction',
+    'Sleep Health Analysis',
+    'Mental-Analysis',
+    'Medical Consultant',
+    'Data Visualization'
+]
+```
+
+### 🧠 Mental Health Analysis
+- Uses **mental/mental-roberta-base** for sentiment-based mental health assessment.
+- Predicts **Depression and Anxiety** based on user input.
+- Provides graphical risk assessment using **Seaborn & Matplotlib**.
+
+### 🔬 Disease Prediction Models
+- **Diabetes Model**: Predicts diabetes risk based on medical data.
+- **Hypertension Model**: Evaluates high blood pressure risk.
+- **Cardiovascular Model**: Uses XGBoost for heart disease prediction.
+- **Stroke Model**: ML-based assessment of stroke risk factors.
+- **Asthma Model**: Machine learning model for asthma detection.
+
+### 📊 Data Visualization
+- Interactive graphs to analyze health trends.
+- Anomaly detection for user predictions.
+
+### 🤖 AI Medical Consultant
+- AI-powered chatbot for answering health-related queries.
+- Uses NLP models for better understanding and recommendations.
+
+---
+
+## 📸 Screenshots & UI Preview
+
+🔍 **Streamlit Application Interface:**
+![Streamlit UI](screenshots/streamlit.png)
+
+📊 **Data Visualization Example:**
+![Data Visualization](screenshots/data_visual.png)
+![User Graph](screenshots/user_graph.png)
+
+🖥 **Separate Frontend Interface:**
+![Frontend UI](screenshots/frontend.png)
+
+---
+
+## ⚠️ Disclaimer
+
+This application has been developed using real-world healthcare datasets sourced from Kaggle:
+
+- **Diabetes Dataset**
+- **Hypertension Dataset**
+- **Cardiovascular Disease Dataset**
+- **Stroke Prediction Dataset**
+- **Asthma Analysis & Prediction Dataset**
+- **Sentiment Analysis for Mental Health**
+
+The predictions are generated using machine learning models trained on these datasets, incorporating evaluation metrics and graphical insights to enhance interpretability.
+
+However, this tool has **not undergone clinical validation** and should be used for **informational and educational purposes only**. It is not intended to serve as a substitute for **professional medical diagnosis or treatment**. Always consult a qualified healthcare provider for medical advice.
+
+---
+
+# 🔬 Ongoing Research & Future Enhancements
+
+🚧 **Fitbit API Integration** – Real-time health monitoring with wearable devices.
+🚧 **LSTM Models for Realtime Fitbit Data** – Developing deep learning models for dynamic health tracking.
+🚧 **Enhanced Mental Health Analysis** – Exploring transformer-based sentiment models for deeper insights.
+🚧 **Hybrid ML & NLP Systems** – Combining structured health data with unstructured text for more accurate predictions.
+
+---
+
+## 👨‍💻 Author
+
+Developed by **Mohit Rajdeo**  
+GitHub: [MOHITRAJDEO12345](https://github.com/MOHITRAJDEO12345)
+
+---
+
+## 🤝 Contributions
+
+Contributions are always welcome! Feel free to open an issue or submit a pull request if you have suggestions or improvements.
+
+---
+
+## 📬 Contact
+
+For any questions or feedback, feel free to reach out:
+
+📧 Email: mohitrajdeo16deoghar@gmail.com  
 🐦 Twitter: [@mohitrajdeo](https://twitter.com/mohitrajdeo)
+

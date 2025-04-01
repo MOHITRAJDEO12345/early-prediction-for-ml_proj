@@ -297,7 +297,19 @@ options = [
 ![Frontend UI](screenshots/frontend.png)
 
 ---
-
+# colab
+- https://colab.research.google.com/drive/1DpOH7KgTWubr5qQjj13EDqxIqsbPLDQe?usp=sharing#scrollTo=EgbDF0U5L1l2
+- https://colab.research.google.com/drive/1GI7Z1GPPUi67X6UssCQVJXr_QoysfJrz#scrollTo=XkcDpRRzFCIX
+- https://colab.research.google.com/drive/1eZIBboyY_x0ZsJp5G10XrFFu4aG4eCuf#scrollTo=3NDJOlrEpmoL
+- http://colab.research.google.com/drive/11KO6cvyTeYY_v5PnYqTwheEupJtNjfCr?usp=sharing#scrollTo=7EyXbXJkPnqf
+- https://colab.research.google.com/drive/1-B7Q8hXHD0iIBvVldnLkvCiWGhJ2iYNL?usp=sharing
+- https://colab.research.google.com/drive/1inXO2_JvTw6fOXiJGaW_0pJvI_3sNo0T?usp=sharing
+- https://colab.research.google.com/drive/1NpwO0NBOKQBtUuN9cC-CXE4vuP5TCavY?usp=sharing
+- https://colab.research.google.com/drive/10W68SdZHS3IvJAjFTBoqEFI5g7USZVo9?usp=sharing
+- https://colab.research.google.com/drive/1J8xvEs7rDn0NLYIzH5S2UgFt-lOk7TA6?usp=sharing
+- https://colab.research.google.com/drive/1BeDmCVjVLb3uqUHdnafgLMLItAtgsAsN?usp=sharing
+- 
+---
 ## ⚠️ Disclaimer
 
 This application has been developed using real-world healthcare datasets sourced from Kaggle:
@@ -312,6 +324,21 @@ This application has been developed using real-world healthcare datasets sourced
 The predictions are generated using machine learning models trained on these datasets, incorporating evaluation metrics and graphical insights to enhance interpretability.
 
 However, this tool has **not undergone clinical validation** and should be used for **informational and educational purposes only**. It is not intended to serve as a substitute for **professional medical diagnosis or treatment**. Always consult a qualified healthcare provider for medical advice.
+
+---
+
+## 📌 Modular Features (Pending Integration)
+
+Several functionalities have been implemented but are pending Streamlit integration for optimization:
+
+✅ **User Login & Basic Inputs**: Secure authentication and user profile management.
+✅ **Personalized Email Reports**: Automated daily, weekly, and monthly health insights.
+✅ **Anomaly Visualization**: Analyzes past predictions to detect anomalies.
+✅ **Workout Plans**: AI-driven personalized workout routines based on health data.
+✅ **Sleep Analysis**: AI-powered sleep tracking and recommendations.
+✅ **Medication Adherence**: Reminders and tracking for prescribed medications.
+✅ **Nutrition Recommendations**: AI-based meal planning and dietary suggestions.
+✅ **Community & Resources**: A section for health articles, discussions, and expert Q&A.
 
 ---
 

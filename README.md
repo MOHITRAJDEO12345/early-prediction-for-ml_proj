@@ -287,13 +287,21 @@ options = [
 ## 📸 Screenshots & UI Preview
 
 🔍 **Streamlit Application Interface:**
+- NOTE: for functionality purpose only
+- YOUTUBE: https://youtu.be/abrRqceVuDU
 ![Streamlit UI](screenshots/streamlit.png)
 
 📊 **Data Visualization Example:**
+- NOTE: currently showing datasets 
+it will be used for visualizing anomalies in user predictions it will become personalized
+![Data Visualization](screenshots/data_visual.png)
 ![Data Visualization](screenshots/data_visual.png)
 ![User Graph](screenshots/user_graph.png)
 
 🖥 **Separate Frontend Interface:**
+- NOTE: the frontend is currently not connected with ml models and it may behave wrongly
+- WORKING: https://v0.dev/chat/community/lifestyle-disease-prediction-ADp1mOc0hKg
+- YOUTUBE: https://youtu.be/DU4FW-8hSoU
 ![Frontend UI](screenshots/frontend.png)
 
 ---

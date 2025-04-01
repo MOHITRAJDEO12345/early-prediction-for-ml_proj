@@ -4,6 +4,8 @@ streamlit
 streamlit-option-menu
 seaborn
 matplotlib
+pickle5
+joblib
 pandas
 google-generativeai
 python-dotenv

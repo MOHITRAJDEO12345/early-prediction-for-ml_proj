@@ -11,3 +11,7 @@ torch
 transformers
 SpeechRecognition
 pydub
+tf-keras
+plotly
+plotly-express
+

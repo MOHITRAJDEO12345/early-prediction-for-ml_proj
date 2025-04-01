@@ -28,15 +28,41 @@ cardio_model = pickle.load(open('cardio_vascular/xgboost_cardiovascular_model.pk
 
 stroke_model = joblib.load("stroke/finalized_model.pkl")
 
-
 prep_asthama = pickle.load(open('asthama/preprocessor.pkl', 'rb'))
+
+# sleep_model = pickle.load(open('sleep_health/best_model.pkl', 'rb'))
+# scaler = pickle.load(open('sleep_health/scaler.pkl', 'rb'))
+# label_encoder = pickle.load(open('sleep_health/label_encoders.pkl', 'rb'))
+
+# At the beginning of your app, when loading models:
+try:
+    sleep_model = pickle.load(open('sleep_health/svc_model.pkl', 'rb'))
+    scaler = pickle.load(open('sleep_health/scaler.pkl', 'rb'))
+    label_encoder = pickle.load(open('sleep_health/label_encoders.pkl', 'rb'))
+    
+    # Store the expected feature names if available
+    # This depends on how your model was saved/trained
+    # if hasattr(sleep_model, 'feature_names_in_'):
+    #     expected_features = sleep_model.feature_names_in_
+    # else:
+    #     # Try to load feature names from a separate file
+    #     try:
+    #         with open('sleep_health/feature_names.pkl', 'rb') as f:
+    #             expected_features = pickle.load(f)
+    #     except:
+    #         st.warning("Warning: Feature names not found. Predictions may be inaccurate.")
+    #         expected_features = None
+            
+except FileNotFoundError:
+    st.error("Error: Model files not found. Please upload the model files.")
+    st.stop()
 
 with st.sidebar:
     st.title("🩺 Disease Prediction")
     
     selected = option_menu(
         menu_title="Navigation",
-        options=['Home','Text-based Disease Prediction', 'Checkbox-to-disease-predictor', 'AI Health Consultant', 'Mental-Analysis', 'Diabetes Prediction', 'Asthma Prediction', 'Cardiovascular Disease Prediction', 'Stroke Prediction', 'Sleep Health Analysis', 'Data Visualization'],
+        options=['Home',  'Diabetes Prediction','Hypertension Prediction', 'Cardiovascular Disease Prediction', 'Stroke Prediction','Asthma Prediction', 'Sleep Health Analysis','Mental-Analysis','Medical Consultant', 'Data Visualization'],
         icons=['house', 'activity', 'lungs', 'heart-pulse', 'brain', 'bar-chart', 'chat'],
         menu_icon="cast",
         default_index=0,
@@ -47,8 +73,10 @@ with st.sidebar:
             "nav-link-selected": {"background-color": "#FF0000", "color": "#FFFFFF"},
         }
     )
-    
 
+
+# 'Checkbox-to-disease-predictor', 
+# 'Text-based Disease Prediction', 
 # Utility function to safely convert input to float
 def safe_float(value, default=0.0):
     try:
@@ -59,10 +87,10 @@ def safe_float(value, default=0.0):
 
 # 🚀 Home Page
 if selected == 'Home':
-    st.title("🩺 AI-Powered Health & Lifestyle Disease Prediction")
+    st.title("🩺 Early Prediction of Health & Lifestyle Diseases")
 
     st.markdown("""
-    ## Welcome to the **AI-Powered Health Prediction System**!  
+    ## Welcome to the **Early Prediction of Health & Lifestyle Diseases**!  
     This tool provides **early prediction and analysis** for various health conditions using **Machine Learning & NLP**.
     
     ### 🏥 Available Features:
@@ -90,16 +118,19 @@ if selected == 'Home':
 
     # Disclaimer Section
     st.markdown("---")
-    st.markdown("""
-    **⚠️ Disclaimer:** This application has been developed using **real-world healthcare datasets** sourced from Kaggle:  
+    # st.markdown("""
+    # **⚠️ Disclaimer:** This application has been developed using **real-world healthcare datasets** sourced from Kaggle:  
 
-    - [Stroke Prediction Dataset](http://kaggle.com/code/chanchal24/stroke-prediction-using-python/input?select=healthcare-dataset-stroke-data.csv)  
-    - [Asthma Analysis & Prediction](https://www.kaggle.com/code/bryamblasrimac/asthma-eda-prediction-f2score-85/input)  
-    - [Diabetes Dataset](https://www.kaggle.com/datasets/mathchi/diabetes-data-set)  
-    - [Cardiovascular Disease Dataset](https://www.kaggle.com/datasets/sulianova/cardiovascular-disease-dataset)  
-    - [Sentiment Analysis for Mental Health](https://www.kaggle.com/datasets/suchintikasarkar/sentiment-analysis-for-mental-health)  
-    - [Sleep Health Analysis](https://www.kaggle.com/datasets/uom190346a/sleep-health-and-lifestyle-dataset)
-                
+    # - [Stroke Prediction Dataset](http://kaggle.com/code/chanchal24/stroke-prediction-using-python/input?select=healthcare-dataset-stroke-data.csv)  
+    # - [Asthma Analysis & Prediction](https://www.kaggle.com/code/bryamblasrimac/asthma-eda-prediction-f2score-85/input)  
+    # - [Diabetes Dataset](https://www.kaggle.com/datasets/mathchi/diabetes-data-set)  
+    # - [Cardiovascular Disease Dataset](https://www.kaggle.com/datasets/sulianova/cardiovascular-disease-dataset)  
+    # - [Sentiment Analysis for Mental Health](https://www.kaggle.com/datasets/suchintikasarkar/sentiment-analysis-for-mental-health)  
+    # - [Sleep Health Analysis](https://www.kaggle.com/datasets/uom190346a/sleep-health-and-lifestyle-dataset)
+    # \
+
+
+    st.markdown("""
     The predictions are generated using **machine learning models** trained on these datasets, incorporating **evaluation metrics and graphical insights** to enhance interpretability.  
 
     However, this tool has **not undergone clinical validation** and should be used **for informational and educational purposes only**. It is not intended to serve as a substitute for professional medical diagnosis or treatment. Always consult a qualified healthcare provider for medical advice.
@@ -145,8 +176,8 @@ if selected == 'Diabetes Prediction':
                 
                 result = "🛑 The person is diabetic" if diab_prediction[0] == 1 else "✅ The person is not diabetic"
                 if diab_prediction[0] == 0:
-                    st.balloons()  # Or use st.confetti() if you install the library
-                st.success(result)
+                    # st.balloons()  # Or use st.confetti() if you install the library
+                    st.success(result)
 
             except Exception as e:
                 st.error(f"❌ Error: {e}")
@@ -172,7 +203,18 @@ if selected == 'Asthma Prediction':
         Smoking_Status_Non_Smoker = 1 if Smoking_Status == "Non-Smoker" else 0
 
     with col2:
-        Age = st.slider("Enter Age (Normalized)", min_value=0.0, max_value=0.914894, value=0.5)
+        # Use actual age as input instead of normalized value
+        actual_age = st.slider("Age", min_value=18, max_value=85, value=40, help="Your actual age in years")
+        
+        # Convert actual age to normalized value (0.0 to 0.914894)
+        # Assuming normalization was done with min_age=18 and max_age=90
+        min_age = 18
+        max_age = 90
+        Age = (actual_age - min_age) / (max_age - min_age)
+        
+        # Show the normalized value for reference (can be hidden in final version)
+        st.info(f"Normalized age value (used by model): {Age:.6f}")
+        
         Peak_Flow = st.slider("Peak Flow (L/sec)", min_value=0.1, max_value=1.0, value=0.5)
 
     with col1:
@@ -193,11 +235,31 @@ if selected == 'Asthma Prediction':
 
                 result = "🛑 High risk of asthma" if asthma_prediction[0] == 1 else "✅ Low risk of asthma"
                 if asthma_prediction[0] == 0:
-                    st.balloons()
-                st.success(result)
+                    # st.balloons()
+                    st.success(result)
+                else:
+                    st.error(result)
+                
+                # Add risk factor analysis
+                st.subheader("Risk Factor Analysis")
+                risk_factors = []
+                
+                if actual_age > 60:
+                    risk_factors.append("⚠️ Age is a risk factor for asthma")
+                if Smoking_Status == "Ex-Smoker":
+                    risk_factors.append("⚠️ Smoking history increases asthma risk")
+                if Peak_Flow < 0.5:
+                    risk_factors.append("⚠️ Low peak flow readings may indicate restricted airways")
+                
+                if risk_factors:
+                    for factor in risk_factors:
+                        st.markdown(factor)
+                else:
+                    st.markdown("✅ No significant risk factors identified")
 
             except Exception as e:
                 st.error(f"❌ Error: {e}")
+                st.info("If you have access to the preprocessing pipeline, you can check the exact age normalization formula used during model training.")
 
 
 if selected == 'Cardiovascular Disease Prediction':
@@ -247,8 +309,8 @@ if selected == 'Cardiovascular Disease Prediction':
             # Display Result
             result = "🛑 High risk of cardiovascular disease" if cardio_prediction[0] == 1 else "✅ Low risk of cardiovascular disease"
             if cardio_prediction[0] == 0:
-                st.balloons()
-            st.success(result)
+                # st.balloons()
+                st.success(result)
 
         except Exception as e:
             st.error(f"❌ Error: {e}")
@@ -379,12 +441,12 @@ if selected == 'Data Visualization':
             plt.title(f"{selected_plot} of {x_axis} vs {y_axis}", fontsize=12)
             plt.xlabel(x_axis, fontsize=10)
             plt.ylabel(y_axis, fontsize=10)
-
+            
             st.pyplot(fig)
 
 
-if selected == 'AI Health Consultant':
-    st.title("🩺 AI Health Consultation Assistant")
+if selected == 'Medical Consultant':
+    st.title("🩺 Medical Consultant Chatbot")
     st.markdown("### Discuss Your Health Concerns with Our AI-powered Chatbot")
     st.write("Ask about **Diabetes, Asthma, Stroke, Cardiovascular Disease, or Mental Health.**")
 
@@ -457,7 +519,7 @@ if selected == 'AI Health Consultant':
 
         # Restriction: Only process if related to health topics
         if any(keyword in user_prompt.lower() for keyword in allowed_keywords):
-            model = genai.GenerativeModel("gemini-2.0-flash-lite")
+            model = genai.GenerativeModel("gemini-2.0-flash")
             response = model.generate_content(user_prompt)
 
             if response and hasattr(response, "text"):
@@ -479,80 +541,86 @@ if selected == 'AI Health Consultant':
                 st.markdown(restriction_msg)
 
 
-if selected == 'Checkbox-to-disease-predictor':
-# Load transformer model
-    classifier = pipeline("zero-shot-classification", model="microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract")
+# if selected == 'Checkbox-to-disease-predictor':
+# # Load transformer model
+#     classifier = pipeline("zero-shot-classification", model="microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract")
+#     # Use a pipeline as a high-level helper
 
-    # Define symptoms for each disease
-    diseases = {
-        "Diabetes": ["Frequent urination", "Increased thirst", "Unexplained weight loss", "Fatigue", "Blurred vision"],
-        "Hypertension": ["Headache", "Dizziness", "Chest pain", "Shortness of breath", "Nosebleeds"],
-        "Obesity": ["Excess body fat", "Breathlessness", "Joint pain", "Increased sweating", "Low energy levels"],
-        "Cardiovascular Disease": ["Chest pain", "Shortness of breath", "Dizziness", "Irregular heartbeat", "Fatigue"],
-        "COPD": ["Chronic cough", "Shortness of breath", "Wheezing", "Chest tightness", "Frequent respiratory infections"],
-        "Liver Disease": ["Jaundice", "Abdominal pain", "Swelling in legs", "Chronic fatigue", "Nausea"],
-        "Kidney Disease": ["Swelling in legs", "Fatigue", "Loss of appetite", "Changes in urination", "Muscle cramps"],
-        "Metabolic Syndrome": ["High blood sugar", "High blood pressure", "Increased waist size", "High cholesterol", "Fatigue"],
-        "Osteoarthritis": ["Joint pain", "Stiffness", "Swelling", "Reduced flexibility", "Bone spurs"],
-        "Gastroesophageal Reflux Disease": ["Heartburn", "Acid reflux", "Difficulty swallowing", "Chronic cough", "Sore throat"],
-        "Depression": ["Persistent sadness", "Loss of interest", "Sleep disturbances", "Fatigue", "Difficulty concentrating"],
-        "Sleep Apnea": ["Loud snoring", "Pauses in breathing", "Daytime drowsiness", "Morning headaches", "Irritability"],
-    }
+#     # from transformers import pipeline
 
-    # Streamlit UI
-    st.title("🩺 Hybrid Symptom Checker")
-    st.write("Select your symptoms and get AI-powered predictions!")
+#     # pipe = pipeline("fill-mask", model="microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext")
 
-    selected_symptoms = []
 
-    # Create symptom selection with markdown separation and three columns
-    disease_keys = list(diseases.keys())
+#     # Define symptoms for each disease
+#     diseases = {
+#         "Diabetes": ["Frequent urination", "Increased thirst", "Unexplained weight loss", "Fatigue", "Blurred vision"],
+#         "Hypertension": ["Headache", "Dizziness", "Chest pain", "Shortness of breath", "Nosebleeds"],
+#         "Obesity": ["Excess body fat", "Breathlessness", "Joint pain", "Increased sweating", "Low energy levels"],
+#         "Cardiovascular Disease": ["Chest pain", "Shortness of breath", "Dizziness", "Irregular heartbeat", "Fatigue"],
+#         "COPD": ["Chronic cough", "Shortness of breath", "Wheezing", "Chest tightness", "Frequent respiratory infections"],
+#         "Liver Disease": ["Jaundice", "Abdominal pain", "Swelling in legs", "Chronic fatigue", "Nausea"],
+#         "Kidney Disease": ["Swelling in legs", "Fatigue", "Loss of appetite", "Changes in urination", "Muscle cramps"],
+#         "Metabolic Syndrome": ["High blood sugar", "High blood pressure", "Increased waist size", "High cholesterol", "Fatigue"],
+#         "Osteoarthritis": ["Joint pain", "Stiffness", "Swelling", "Reduced flexibility", "Bone spurs"],
+#         "Gastroesophageal Reflux Disease": ["Heartburn", "Acid reflux", "Difficulty swallowing", "Chronic cough", "Sore throat"],
+#         "Depression": ["Persistent sadness", "Loss of interest", "Sleep disturbances", "Fatigue", "Difficulty concentrating"],
+#         "Sleep Apnea": ["Loud snoring", "Pauses in breathing", "Daytime drowsiness", "Morning headaches", "Irritability"],
+#     }
 
-    for i in range(0, len(disease_keys), 3):
-        cols = st.columns(3)
-        for j in range(3):
-            if i + j < len(disease_keys):
-                disease = disease_keys[i + j]
-                with cols[j]:
-                    st.markdown(f"### {disease}")
-                    for symptom in diseases[disease]:
-                        if st.checkbox(symptom, key=f"{disease}_{symptom}"):
-                            selected_symptoms.append(symptom)
+#     # Streamlit UI
+#     st.title("🩺 Hybrid Symptom Checker")
+#     st.write("Select your symptoms and get AI-powered predictions!")
 
-    if st.button("🔍 Predict Disease"):
-        if selected_symptoms:
-            user_input = ", ".join(selected_symptoms)  # Convert symptoms to text
+#     selected_symptoms = []
 
-            # 1️⃣ Custom Symptom Matching Approach
-            disease_scores = {disease: 0 for disease in diseases.keys()}
-            for disease, symptoms in diseases.items():
-                matches = sum(symptom in selected_symptoms for symptom in symptoms)
-                disease_scores[disease] = matches / len(symptoms)  # Normalize by symptom count
+#     # Create symptom selection with markdown separation and three columns
+#     disease_keys = list(diseases.keys())
 
-            # Normalize to percentage
-            symptom_match_scores = {d: round(score * 100, 2) for d, score in disease_scores.items()}
+#     for i in range(0, len(disease_keys), 3):
+#         cols = st.columns(3)
+#         for j in range(3):
+#             if i + j < len(disease_keys):
+#                 disease = disease_keys[i + j]
+#                 with cols[j]:
+#                     st.markdown(f"### {disease}")
+#                     for symptom in diseases[disease]:
+#                         if st.checkbox(symptom, key=f"{disease}_{symptom}"):
+#                             selected_symptoms.append(symptom)
 
-            # 2️⃣ AI Model Prediction
-            ai_results = classifier(user_input, list(diseases.keys()))
-            ai_scores = {ai_results["labels"][i]: round(ai_results["scores"][i] * 100, 2) for i in range(len(ai_results["labels"]))}
+#     if st.button("🔍 Predict Disease"):
+#         if selected_symptoms:
+#             user_input = ", ".join(selected_symptoms)  # Convert symptoms to text
 
-            # 3️⃣ Hybrid Score Calculation (Average of Both Scores)
-            final_scores = {}
-            for disease in diseases.keys():
-                symptom_score = symptom_match_scores.get(disease, 0)
-                ai_score = ai_scores.get(disease, 0)
-                final_scores[disease] = round((symptom_score + ai_score) / 2, 2)  # Averaging
+#             # 1️⃣ Custom Symptom Matching Approach
+#             disease_scores = {disease: 0 for disease in diseases.keys()}
+#             for disease, symptoms in diseases.items():
+#                 matches = sum(symptom in selected_symptoms for symptom in symptoms)
+#                 disease_scores[disease] = matches / len(symptoms)  # Normalize by symptom count
 
-            # Sort by final score
-            sorted_final_scores = sorted(final_scores.items(), key=lambda x: x[1], reverse=True)
+#             # Normalize to percentage
+#             symptom_match_scores = {d: round(score * 100, 2) for d, score in disease_scores.items()}
 
-            # Display results
-            st.write("### 🔬 Possible Conditions (Hybrid Model Prediction):")
-            for disease, score in sorted_final_scores:
-                if score > 0:
-                    st.write(f"🩺 {disease}: {score}% match")
-        else:
-            st.write("⚠️ Please select at least one symptom.")
+#             # 2️⃣ AI Model Prediction
+#             ai_results = classifier(user_input, list(diseases.keys()))
+#             ai_scores = {ai_results["labels"][i]: round(ai_results["scores"][i] * 100, 2) for i in range(len(ai_results["labels"]))}
+
+#             # 3️⃣ Hybrid Score Calculation (Average of Both Scores)
+#             final_scores = {}
+#             for disease in diseases.keys():
+#                 symptom_score = symptom_match_scores.get(disease, 0)
+#                 ai_score = ai_scores.get(disease, 0)
+#                 final_scores[disease] = round((symptom_score + ai_score) / 2, 2)  # Averaging
+
+#             # Sort by final score
+#             sorted_final_scores = sorted(final_scores.items(), key=lambda x: x[1], reverse=True)
+
+#             # Display results
+#             st.write("### 🔬 Possible Conditions (Hybrid Model Prediction):")
+#             for disease, score in sorted_final_scores:
+#                 if score > 0:
+#                     st.write(f"🩺 {disease}: {score}% match")
+#         else:
+#             st.write("⚠️ Please select at least one symptom.")
 
 
 import torch
@@ -625,281 +693,257 @@ if selected == "Mental-Analysis":
             # Display the chart in a single column
             st.pyplot(fig)
 
+
 if selected == 'Sleep Health Analysis':
     st.title("🌙 Sleep Health Analysis")
-    st.markdown("Analyze sleep patterns and health conditions using a **pre-trained AI model**.")
-    st.markdown("This tool predicts **Sleep Disorders** based on input data.")
+    st.image("https://cdn-icons-png.flaticon.com/512/1205/1205526.png", width=100)
+    
+    st.markdown("""
+    This model predicts the likelihood of **Sleep Disorders** based on various health factors.  
+    Enter your details and click **"Sleep Health Test Result"** to get the prediction.
+    """)
 
-    import streamlit as st
-    import pandas as pd
-    import numpy as np
-    import pickle
-    from sklearn.preprocessing import LabelEncoder, StandardScaler
-
-    # Load the trained model
+    # Load models
     try:
-        with open('sleep_health/best_model.pkl', 'rb') as file:
-            model = pickle.load(file)
+        sleep_model = pickle.load(open('sleep_health/svc_model.pkl', 'rb'))
+        scaler = pickle.load(open('sleep_health/scaler.pkl', 'rb'))
+        label_encoder = pickle.load(open('sleep_health/label_encoders.pkl', 'rb'))
     except FileNotFoundError:
-        st.error("Error: 'best_model.pkl' not found. Please upload the model file.")
-        st.stop()
-
-    # Load the scaler
-    try:
-        with open('sleep_health/scaler.pkl', 'rb') as file:
-            scaler = pickle.load(file)
-    except FileNotFoundError:
-        st.error("Error: 'scaler.pkl' not found. Please upload the scaler file.")
+        st.error("Error: Model files not found. Please upload the model files.")
         st.stop()
 
     # Input fields for user data
-    gender = st.selectbox('Gender', ['Male', 'Female'])
-    age = st.number_input("Age", min_value=18, max_value=100)
-    occupation = st.selectbox("Occupation", ['Software Engineer', 'Teacher', 'Doctor', 'Business', 'Sales Representative', 'Scientist', 'Accountant', 'Engineer'])
-    sleep_duration = st.number_input("Sleep Duration (hours)", min_value=0.0, max_value=12.0)
-    quality_of_sleep = st.number_input('Quality of Sleep', min_value=1, max_value=5)
-    physical_activity_level = st.number_input('Physical Activity Level', min_value=1, max_value=5)
-    stress_level = st.number_input('Stress Level', min_value=1, max_value=5)
-    bmi_category = st.selectbox("BMI Category", ["Normal", "Overweight", "Obese"])
-    blood_pressure = st.number_input("Blood Pressure", min_value=0, max_value=200)
-    heart_rate = st.number_input("Heart Rate", min_value=0, max_value=200)
-    daily_steps = st.number_input("Daily Steps", min_value=0, max_value=50000)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        gender = st.selectbox('Gender', ['Male', 'Female'], key='gender_sleep')
+        age = st.slider("Age", min_value=27, max_value=59, value=35, 
+                      help="Age range in dataset: 27-59 years", key='age_sleep')
+        occupation = st.selectbox("Occupation", 
+            ['Software Engineer', 'Doctor', 'Sales Representative', 'Teacher', 'Business',
+             'Scientist', 'Accountant', 'Engineer'], key='occupation_sleep')
+        sleep_duration = st.slider("Sleep Duration (hours)", 
+            min_value=5.8, max_value=8.5, value=6.5, step=0.1,
+            help="Dataset range: 5.8-8.5 hours", key='sleep_duration')
+        quality_of_sleep = st.slider('Quality of Sleep', 
+            min_value=4, max_value=9, value=6,
+            help="Higher is better (4-9 scale)", key='quality_sleep')
+        physical_activity_level = st.slider('Physical Activity Level (minutes/day)', 
+            min_value=30, max_value=90, value=45,
+            help="Physical activity in minutes per day", key='activity_sleep')
+
+    with col2:
+        stress_level = st.slider('Stress Level', 
+            min_value=3, max_value=8, value=6, 
+            help="Higher values indicate higher stress (3-8 scale)", key='stress_sleep')
+        bmi_category = st.selectbox("BMI Category", 
+            ["Normal", "Overweight", "Obese"], key='bmi_sleep')
+        
+        # For blood pressure, let's use two separate inputs for systolic/diastolic
+        col2a, col2b = st.columns(2)
+        with col2a:
+            systolic = st.slider("Blood Pressure (Systolic)", 
+                min_value=110, max_value=140, value=125, key='bp_sys_sleep')
+        with col2b:
+            diastolic = st.slider("Diastolic", 
+                min_value=70, max_value=95, value=80, key='bp_dia_sleep')
+        
+        blood_pressure = f"{systolic}/{diastolic}"
+        
+        heart_rate = st.slider("Heart Rate (bpm)", 
+            min_value=65, max_value=86, value=75, 
+            help="Normal range: 60-100 bpm", key='hr_sleep')
+        daily_steps = st.slider("Daily Steps", 
+            min_value=3000, max_value=10000, value=6000, step=500,
+            help="Recommended: 7,000-10,000 steps/day", key='steps_sleep')
 
     # Create a button to trigger prediction
-    # if st.button("Predict"):
-    #     # Prepare input data
-    #     input_data = pd.DataFrame({
-    #         'Gender': [gender],
-    #         'Age': [age],
-    #         'Occupation': [occupation],
-    #         'Sleep Duration': [sleep_duration],
-    #         'Quality of Sleep': [quality_of_sleep],
-    #         'Physical Activity Level': [physical_activity_level],
-    #         'Stress Level': [stress_level],
-    #         'BMI Category': [bmi_category],
-    #         'Blood Pressure': [blood_pressure],
-    #         'Heart Rate': [heart_rate],
-    #         'Daily Steps': [daily_steps]
-    #     })
-
-    #     # Preprocess the input data
-    #     try:
-    #         # Encode categorical features
-    #         input_data['Gender'] = LabelEncoder().fit_transform(input_data['Gender'])
-    #         input_data['Occupation'] = LabelEncoder().fit_transform(input_data['Occupation'])
-    #         input_data = pd.get_dummies(input_data, drop_first=True)
-
-    #         X_train = 0
-    #         with open('sleep_health/columns.pkl', 'wb') as file:
-    #             pickle.dump(columns, file)            # Handle missing columns in the test set
-    #         missing_cols = set(X_train.columns) - set(input_data.columns)
-    #         for c in missing_cols:
-    #             input_data[c] = 0
-    #         input_data = input_data[X_train.columns]
-
-    #         # Scale the input data
-    #         input_data = scaler.transform(input_data)
-
-    #         # Make a prediction using the loaded model
-    #         prediction = model.predict(input_data)
-    #         predicted_class = le.inverse_transform(prediction)[0]  # Convert the prediction back to original label
-    #         st.write(f"Predicted Sleep Disorder: {predicted_class}")
-    #     except ValueError as e:  # Catch any errors that could occur with preprocessing
-    #         st.error(f"Error during prediction: {e}")
-    
-
-
-
-# if selected == 'Text-based Disease Prediction':
-#     st.title("📝 Text-based Disease Prediction")
-#     st.markdown("Enter your symptoms in the text area below, or use audio input, and the AI will predict possible lifestyle diseases.")
-
-#     from transformers import AutoTokenizer, AutoModelForSequenceClassification
-#     import torch
-#     import speech_recognition as sr
-#     from pydub import AudioSegment
-#     from pydub.playback import play
-
-#     # Define diseases and symptoms
-#     diseases = {
-#         "Diabetes": ["Frequent urination", "Increased thirst", "Unexplained weight loss", "Fatigue", "Blurred vision", "Slow-healing wounds", "Increased hunger", "Dry skin", "Numbness or tingling in hands/feet", "Recurring infections"],
-#         "Hypertension": ["Headache", "Dizziness", "Chest pain", "Shortness of breath", "Nosebleeds", "Flushing", "Vision problems", "Irregular heartbeat", "Blood in urine", "Fatigue"],
-#         "Obesity": ["Excess body fat", "Breathlessness", "Joint pain", "Increased sweating", "Low energy levels", "Sleep apnea", "Skin problems", "Back pain", "Difficulty with physical activity", "High blood pressure"],
-#         "Cardiovascular Disease": ["Chest pain", "Shortness of breath", "Dizziness", "Irregular heartbeat", "Fatigue", "Swelling in legs/ankles", "Neck/jaw/throat/back pain", "Nausea", "Cold sweats", "Lightheadedness"],
-#         "COPD": ["Chronic cough", "Shortness of breath", "Wheezing", "Chest tightness", "Frequent respiratory infections", "Bluish lips or fingernails", "Fatigue", "Unintended weight loss", "Swelling in ankles/feet/legs", "Difficulty sleeping"],
-#         "Liver Disease": ["Jaundice", "Abdominal pain", "Swelling in legs", "Chronic fatigue", "Nausea", "Itchy skin", "Dark urine", "Pale stools", "Loss of appetite", "Easy bruising"],
-#         "Kidney Disease": ["Swelling in legs", "Fatigue", "Loss of appetite", "Changes in urination", "Muscle cramps", "Nausea", "Difficulty concentrating", "Dry, itchy skin", "Shortness of breath", "High blood pressure"],
-#         "Metabolic Syndrome": ["High blood sugar", "High blood pressure", "Increased waist size", "High cholesterol", "Fatigue", "Blurred vision", "Increased thirst", "Frequent urination", "Slow-healing wounds", "Skin tags"],
-#         "Osteoarthritis": ["Joint pain", "Stiffness", "Swelling", "Reduced flexibility", "Bone spurs", "Grating sensation", "Tenderness", "Loss of joint space", "Muscle weakness", "Deformity"],
-#         "Gastroesophageal Reflux Disease": ["Heartburn", "Acid reflux", "Difficulty swallowing", "Chronic cough", "Sore throat", "Chest pain", "Regurgitation", "Feeling of lump in throat", "Hoarseness", "Bad breath"],
-#         "Depression": ["Persistent sadness", "Loss of interest", "Sleep disturbances", "Fatigue", "Difficulty concentrating", "Changes in appetite", "Feelings of worthlessness", "Irritability", "Physical aches and pains", "Thoughts of death or suicide"],
-#         "Sleep Apnea": ["Loud snoring", "Pauses in breathing", "Daytime drowsiness", "Morning headaches", "Irritability", "Dry mouth upon waking", "Difficulty staying asleep", "Attention problems", "Mood changes", "High blood pressure"],
-#         "Asthma": ["Wheezing", "Shortness of breath", "Chest tightness", "Coughing", "Difficulty sleeping", "Fatigue", "Anxiety", "Rapid breathing", "Difficulty speaking", "Blue lips or fingernails"],
-#         "Rheumatoid Arthritis": ["Joint pain", "Swelling", "Stiffness", "Fatigue", "Fever", "Loss of appetite", "Dry eyes and mouth", "Firm bumps under the skin", "Numbness and tingling", "Anemia"],
-#         "Alzheimer's Disease": ["Memory loss", "Difficulty planning or solving problems", "Trouble completing familiar tasks", "Confusion with time or place", "Vision problems", "Problems with words", "Misplacing things", "Poor judgment", "Withdrawal from social activities", "Mood and personality changes"]
-#     }
-
-#     # Load the pre-trained model and tokenizer
-#     model_name = "distilbert-base-uncased"
-#     tokenizer = AutoTokenizer.from_pretrained(model_name)
-#     model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=len(diseases))
-
-#     # Create a text area for user input
-#     user_input = st.text_area("Describe your symptoms (e.g., 'I feel tired all the time and have frequent headaches.'):")
-
-#     # Audio input
-#     st.markdown("### Or use audio input:")
-#     audio_file = st.file_uploader("Upload an audio file", type=["wav", "mp3"])
-
-#     if audio_file is not None:
-#         # Convert audio file to text
-#         recognizer = sr.Recognizer()
-#         audio = AudioSegment.from_file(audio_file)
-#         audio.export("temp.wav", format="wav")
-#         with sr.AudioFile("temp.wav") as source:
-#             audio_data = recognizer.record(source)
-#             try:
-#                 user_input = recognizer.recognize_google(audio_data)
-#                 st.write(f"Recognized Text: {user_input}")
-#             except sr.UnknownValueError:
-#                 st.write("Google Speech Recognition could not understand the audio.")
-#             except sr.RequestError as e:
-#                 st.write(f"Could not request results from Google Speech Recognition service; {e}")
-
-#     if st.button("Predict Disease"):
-#         if user_input:
-#             # Tokenize and preprocess the input text
-#             inputs = tokenizer(user_input, return_tensors="pt", truncation=True, padding=True)
-
-#             # Get raw logits from the model
-#             with torch.no_grad():
-#                 outputs = model(**inputs)
-#             logits = outputs.logits
-
-#             # Apply softmax to get probabilities
-#             probs = torch.softmax(logits, dim=1).squeeze().tolist()
-
-#             # Map to labels
-#             disease_labels = list(diseases.keys())
-#             predictions = {disease_labels[i]: round(probs[i] * 100, 2) for i in range(len(probs))}
-
-#             # Display predictions
-#             st.write("### Predictions:")
-#             for label, score in predictions.items():
-#                 st.write(f"🩺 **{label}**: {score}% confidence")
-
-#             # Sort for better visualization
-#             sorted_labels = sorted(predictions.keys(), key=lambda x: predictions[x], reverse=True)
-#             sorted_scores = [predictions[label] for label in sorted_labels]
-
-#             # Plot using Seaborn
-#             fig, ax = plt.subplots(figsize=(4, 2.5))  # Compact size
-#             sns.barplot(x=sorted_scores, y=sorted_labels, palette="coolwarm", ax=ax)
-
-#             # Labels & title
-#             ax.set_xlabel("Risk Probability (%)")
-#             ax.set_title("Disease Risk Assessment")
-#             ax.set_xlim(0, 100)
+    if st.button('Sleep Health Test Result', key='sleep_test_button'):
+        try:
+            # Prepare input data
+            input_data = {
+                'Gender': gender,
+                'Age': age,
+                'Occupation': occupation,
+                'Sleep Duration': sleep_duration,
+                'Quality of Sleep': quality_of_sleep,
+                'Physical Activity Level': physical_activity_level,
+                'Stress Level': stress_level,
+                'BMI Category': bmi_category,
+                'Blood Pressure': blood_pressure,
+                'Heart Rate': heart_rate,
+                'Daily Steps': daily_steps
+            }
             
-#             # Add percentages inside bars
-#             for i, (score, label) in enumerate(zip(sorted_scores, sorted_labels)):
-#                 ax.text(score - 5, i, f"{score}%", va='center', ha='right', color='white', fontsize=10, fontweight='bold')
-
-#             # Display the chart in a single column
-#             st.pyplot(fig)
-#         else:
-#             st.write("⚠️ Please enter your symptoms.")
-
-
-
-
-# if selected == 'Text-based Disease Prediction':
-#     st.title("📝 Text-based Disease Prediction")
-#     st.markdown("Enter your symptoms in the text area below, or use audio input, and the AI will predict possible lifestyle diseases.")
-
-#     import os
-#     import google.generativeai as genai
-#     import speech_recognition as sr
-#     from pydub import AudioSegment
-#     from pydub.playback import play
-
-#     # Configure the Gemini API
-#     genai.configure(api_key="AIzaSyD9x7Kz8adDo6-nVyk9MAQjlwD4lTeKc84")
-
-#     # Define diseases and symptoms
-#     diseases = {
-#         "Diabetes": ["Frequent urination", "Increased thirst", "Unexplained weight loss", "Fatigue", "Blurred vision", "Slow-healing wounds", "Increased hunger", "Dry skin", "Numbness or tingling in hands/feet", "Recurring infections"],
-#         "Hypertension": ["Headache", "Dizziness", "Chest pain", "Shortness of breath", "Nosebleeds", "Flushing", "Vision problems", "Irregular heartbeat", "Blood in urine", "Fatigue"],
-#         "Obesity": ["Excess body fat", "Breathlessness", "Joint pain", "Increased sweating", "Low energy levels", "Sleep apnea", "Skin problems", "Back pain", "Difficulty with physical activity", "High blood pressure"],
-#         "Cardiovascular Disease": ["Chest pain", "Shortness of breath", "Dizziness", "Irregular heartbeat", "Fatigue", "Swelling in legs/ankles", "Neck/jaw/throat/back pain", "Nausea", "Cold sweats", "Lightheadedness"],
-#         "COPD": ["Chronic cough", "Shortness of breath", "Wheezing", "Chest tightness", "Frequent respiratory infections", "Bluish lips or fingernails", "Fatigue", "Unintended weight loss", "Swelling in ankles/feet/legs", "Difficulty sleeping"],
-#         "Liver Disease": ["Jaundice", "Abdominal pain", "Swelling in legs", "Chronic fatigue", "Nausea", "Itchy skin", "Dark urine", "Pale stools", "Loss of appetite", "Easy bruising"],
-#         "Kidney Disease": ["Swelling in legs", "Fatigue", "Loss of appetite", "Changes in urination", "Muscle cramps", "Nausea", "Difficulty concentrating", "Dry, itchy skin", "Shortness of breath", "High blood pressure"],
-#         "Metabolic Syndrome": ["High blood sugar", "High blood pressure", "Increased waist size", "High cholesterol", "Fatigue", "Blurred vision", "Increased thirst", "Frequent urination", "Slow-healing wounds", "Skin tags"],
-#         "Osteoarthritis": ["Joint pain", "Stiffness", "Swelling", "Reduced flexibility", "Bone spurs", "Grating sensation", "Tenderness", "Loss of joint space", "Muscle weakness", "Deformity"],
-#         "Gastroesophageal Reflux Disease": ["Heartburn", "Acid reflux", "Difficulty swallowing", "Chronic cough", "Sore throat", "Chest pain", "Regurgitation", "Feeling of lump in throat", "Hoarseness", "Bad breath"],
-#         "Depression": ["Persistent sadness", "Loss of interest", "Sleep disturbances", "Fatigue", "Difficulty concentrating", "Changes in appetite", "Feelings of worthlessness", "Irritability", "Physical aches and pains", "Thoughts of death or suicide"],
-#         "Sleep Apnea": ["Loud snoring", "Pauses in breathing", "Daytime drowsiness", "Morning headaches", "Irritability", "Dry mouth upon waking", "Difficulty staying asleep", "Attention problems", "Mood changes", "High blood pressure"],
-#         "Asthma": ["Wheezing", "Shortness of breath", "Chest tightness", "Coughing", "Difficulty sleeping", "Fatigue", "Anxiety", "Rapid breathing", "Difficulty speaking", "Blue lips or fingernails"],
-#         "Rheumatoid Arthritis": ["Joint pain", "Swelling", "Stiffness", "Fatigue", "Fever", "Loss of appetite", "Dry eyes and mouth", "Firm bumps under the skin", "Numbness and tingling", "Anemia"],
-#         "Alzheimer's Disease": ["Memory loss", "Difficulty planning or solving problems", "Trouble completing familiar tasks", "Confusion with time or place", "Vision problems", "Problems with words", "Misplacing things", "Poor judgment", "Withdrawal from social activities", "Mood and personality changes"]
-#     }
-
-#     # Create a text area for user input
-#     user_input = st.text_area("Describe your symptoms (e.g., 'I feel tired all the time and have frequent headaches.'):")
-
-#     # Audio input
-#     st.markdown("### Or use audio input:")
-#     audio_file = st.file_uploader("Upload an audio file", type=["wav", "mp3"])
-
-#     if audio_file is not None:
-#         # Convert audio file to text
-#         recognizer = sr.Recognizer()
-#         audio = AudioSegment.from_file(audio_file)
-#         audio.export("temp.wav", format="wav")
-#         with sr.AudioFile("temp.wav") as source:
-#             audio_data = recognizer.record(source)
-#             try:
-#                 user_input = recognizer.recognize_google(audio_data)
-#                 st.write(f"Recognized Text: {user_input}")
-#             except sr.UnknownValueError:
-#                 st.write("Google Speech Recognition could not understand the audio.")
-#             except sr.RequestError as e:
-#                 st.write(f"Could not request results from Google Speech Recognition service; {e}")
-
-#     if st.button("Predict Disease"):
-#         if user_input:
-#             # Use Gemini model to generate predictions
-#             model = genai.GenerativeModel("gemini-2.0-flash-lite")
-#             response = model.generate_content(user_input)
-
-#             if response and hasattr(response, "text"):
-#                 predictions = response.text
-#             else:
-#                 predictions = "I'm sorry, I couldn't generate a response."
-
-#             # Display predictions
-#             st.write("### Predictions:")
-#             st.write(predictions)
-
-#             # Sort for better visualization
-#             sorted_labels = sorted(predictions.keys(), key=lambda x: predictions[x], reverse=True)
-#             sorted_scores = [predictions[label] for label in sorted_labels]
-
-#             # Plot using Seaborn
-#             fig, ax = plt.subplots(figsize=(4, 2.5))  # Compact size
-#             sns.barplot(x=sorted_scores, y=sorted_labels, palette="coolwarm", ax=ax)
-
-#             # Labels & title
-#             ax.set_xlabel("Risk Probability (%)")
-#             ax.set_title("Disease Risk Assessment")
-#             ax.set_xlim(0, 100)
+            # Process and predict
+            df = pd.DataFrame([input_data])
             
-#             # Add percentages inside bars
-#             for i, (score, label) in enumerate(zip(sorted_scores, sorted_labels)):
-#                 ax.text(score - 5, i, f"{score}%", va='center', ha='right', color='white', fontsize=10, fontweight='bold')
+            # Apply label encoding to categorical features
+            for col, encoder in label_encoder.items():
+                if col in df.columns:
+                    df[col] = encoder.transform([df[col].iloc[0]])[0]
+            
+            # Feature Engineering and Preprocessing
+            columns_to_drop = ["Physical Activity Level", "Person ID"]
+            for col in columns_to_drop:
+                if col in df.columns:
+                    df = df.drop(columns=[col])
+            
+            # Create dummy variables with the correct column names expected by the model
+            df = pd.get_dummies(df)
+            
+            # Get the expected feature names from the model
+            # You might need to store these feature names during training
+            expected_features = [
+                'Age', 'Sleep Duration', 'Quality of Sleep', 'Stress Level',
+                'Heart Rate', 'Daily Steps', 'Gender_Female', 'Gender_Male',
+                'Occupation_Accountant', 'Occupation_Business', 'Occupation_Doctor',
+                'Occupation_Engineer', 'Occupation_Sales Representative', 
+                'Occupation_Scientist', 'Occupation_Software Engineer', 'Occupation_Teacher',
+                'BMI Category_Normal', 'BMI Category_Obese', 'BMI Category_Overweight',
+                'Blood Pressure_110/70', 'Blood Pressure_120/80', 'Blood Pressure_125/80',
+                'Blood Pressure_130/85', 'Blood Pressure_140/90'
+            ]
+            
+            # Create a DataFrame with expected features filled with zeros
+            prediction_df = pd.DataFrame(0, index=[0], columns=expected_features)
+            
+            # Fill in the values from our current DataFrame
+            for col in df.columns:
+                if col in prediction_df.columns:
+                    prediction_df[col] = df[col].values
+                    
+            # Scale with proper error handling
+            with st.spinner("⏳ Predicting... Please wait..."):
+                time.sleep(2)
+                # Use the properly formatted DataFrame
+                prediction = sleep_model.predict(prediction_df)
+            
+            # Display result
+            result = "🛑 High risk of sleep disorder" if prediction[0] == 1 else "✅ Low risk of sleep disorder"
+            if prediction[0] == 0:
+                st.balloons()
+            st.success(result)
+            
+            # Show risk factors based on input
+            st.subheader("Risk Factor Analysis")
+            risk_factors = []
+            
+            if sleep_duration < 6.0:
+                risk_factors.append("⚠️ Low sleep duration (less than 6 hours)")
+            if quality_of_sleep < 6:
+                risk_factors.append("⚠️ Poor sleep quality")
+            if stress_level > 6:
+                risk_factors.append("⚠️ High stress levels")
+            if bmi_category in ["Overweight", "Obese"]:
+                risk_factors.append(f"⚠️ {bmi_category} BMI category")
+            if int(systolic) > 130 or int(diastolic) > 85:
+                risk_factors.append("⚠️ Elevated blood pressure")
+            if heart_rate > 80:
+                risk_factors.append("⚠️ Elevated heart rate")
+            if daily_steps < 5000:
+                risk_factors.append("⚠️ Low daily activity (steps)")
+                
+            if risk_factors:
+                st.markdown("##### Potential Risk Factors:")
+                for factor in risk_factors:
+                    st.markdown(factor)
+            else:
+                st.markdown("✅ No significant risk factors identified.")
 
-#             # Display the chart in a single column
-#             st.pyplot(fig)
-#         else:
-#             st.write("⚠️ Please enter your symptoms.")
+        except Exception as e:
+            st.error(f"❌ Error: {e}")
+
+
+
+
+if selected=='Hypertension Prediction':
+    st.title("Hypertension Risk Prediction App")
+    st.markdown("This application uses an Extra Trees Classifier model to predict hypertension risk based on patient health data.")
+
+    # Load the model and scaler
+    try:
+        hypertension_model = pickle.load(open('hypertension\extratrees_model.pkl', 'rb'))
+        hypertension_scaler = pickle.load(open('hypertension\scaler.pkl', 'rb'))
+        st.success("Model and scaler loaded successfully!")
+    except Exception as e:
+        st.error(f"Error loading model or scaler: {e}")
+        st.info("Please check that model and scaler files are in the correct location.")
+        st.warning("Expected path: 'hypertension/extratrees_model.pkl' and 'hypertension/scaler.pkl'")
+
+    # Define input section
+    st.subheader("Patient Information")
+
+    # Create two columns for input layout
+    col1, col2 = st.columns(2)
+
+    with col1:
+        male = st.radio("Gender", options=[0, 1], format_func=lambda x: "Female" if x == 0 else "Male")
+        age = st.slider("Age", min_value=32, max_value=70, value=49, help="Patient's age (32-70 years)")
+        cigs_per_day = st.slider("Cigarettes Per Day", min_value=0.0, max_value=70.0, value=0.0, step=1.0)
+        bp_meds = st.radio("On Blood Pressure Medication", options=[0.0, 1.0], format_func=lambda x: "No" if x == 0.0 else "Yes")
+        tot_chol = st.slider("Total Cholesterol", min_value=107.0, max_value=500.0, value=234.0, step=1.0, help="mg/dL")
+
+    with col2:
+        sys_bp = st.slider("Systolic Blood Pressure", min_value=83.5, max_value=295.0, value=128.0, step=0.5, help="mmHg")
+        dia_bp = st.slider("Diastolic Blood Pressure", min_value=48.0, max_value=142.5, value=82.0, step=0.5, help="mmHg")
+        bmi = st.slider("BMI", min_value=15.54, max_value=56.80, value=25.40, step=0.01)
+        heart_rate = st.slider("Heart Rate", min_value=44.0, max_value=143.0, value=75.0, step=1.0, help="beats per minute")
+        glucose = st.slider("Glucose", min_value=40.0, max_value=394.0, value=78.0, step=1.0, help="mg/dL")
+
+    # Prediction button
+    predict_button = st.button("Predict Hypertension Risk")
+
+    if predict_button:
+        # Create input dataframe
+        input_data = pd.DataFrame({
+            'male': [male],
+            'age': [age],
+            'cigsPerDay': [cigs_per_day],
+            'BPMeds': [bp_meds],
+            'totChol': [tot_chol],
+            'sysBP': [sys_bp],
+            'diaBP': [dia_bp],
+            'BMI': [bmi],
+            'heartRate': [heart_rate],
+            'glucose': [glucose]
+        })
+        
+        # Display input data
+        st.subheader("Input Data:")
+        st.dataframe(input_data)
+        
+        # Identify numerical columns to scale
+        num_cols = ['age', 'cigsPerDay', 'totChol', 'sysBP', 'diaBP', 'BMI', 'heartRate', 'glucose']
+        
+        try:
+            # Scale the numerical features
+            input_data[num_cols] = hypertension_scaler.transform(input_data[num_cols])
+            
+            # Make prediction
+            prediction = hypertension_model.predict(input_data)[0]
+            prediction_prob = hypertension_model.predict_proba(input_data)[0]
+            
+            # Display prediction results
+            st.subheader("Prediction Result:")
+            
+            # Create columns for results
+            res_col1, res_col2 = st.columns(2)
+            
+            with res_col1:
+                if prediction == 0:
+                    st.success("✅ Low Risk of Hypertension")
+                else:
+                    st.error("🚨 High Risk of Hypertension")
+            
+            with res_col2:
+                # Visualization
+                st.write(f"Probability of Low Risk: {prediction_prob[0]:.2f}")
+                st.write(f"Probability of High Risk: {prediction_prob[1]:.2f}")
+                
+                # Add progress bar
+                st.progress(float(prediction_prob[1]))
+        
+        except Exception as e:
+            st.error(f"Error during prediction: {e}")
+        # st.info("Please check that all inputs are valid and within the expected ranges.")

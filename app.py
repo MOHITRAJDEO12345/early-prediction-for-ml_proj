@@ -152,7 +152,15 @@ if selected == 'Diabetes Prediction':
     col1, col2 = st.columns(2)
 
     with col1:
-        Pregnancies = safe_float(st.text_input("Number of Pregnancies", "0"))
+        gender = st.radio("Gender", ["Male", "Female"], horizontal=True)
+        
+        # For females, show Pregnancies input; for males, set to 0
+        if gender == "Female":
+            Pregnancies = safe_float(st.text_input("Number of Pregnancies", "0"))
+        else:
+            Pregnancies = 0.0
+            st.info("Pregnancies set to 0 for males")
+            
         Glucose = safe_float(st.text_input("Glucose Level", "100"))
         BloodPressure = safe_float(st.text_input("Blood Pressure", "80"))
         SkinThickness = safe_float(st.text_input("Skin Thickness", "20"))
@@ -171,13 +179,13 @@ if selected == 'Diabetes Prediction':
                 with st.spinner("⏳ Predicting... Please wait..."):
                     time.sleep(2)  # Simulating delay (remove in actual use)
                     diab_prediction = diabetes_model.predict(input_data)
-
-                
                 
                 result = "🛑 The person is diabetic" if diab_prediction[0] == 1 else "✅ The person is not diabetic"
                 if diab_prediction[0] == 0:
                     # st.balloons()  # Or use st.confetti() if you install the library
                     st.success(result)
+                else:
+                    st.error(result)
 
             except Exception as e:
                 st.error(f"❌ Error: {e}")

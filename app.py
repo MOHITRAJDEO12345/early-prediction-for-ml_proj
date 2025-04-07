@@ -62,8 +62,10 @@ with st.sidebar:
     
     selected = option_menu(
         menu_title="Navigation",
-        options=['Home',  'Diabetes Prediction','Hypertension Prediction', 'Cardiovascular Disease Prediction', 'Stroke Prediction','Asthma Prediction', 'Sleep Health Analysis','Mental-Analysis','Medical Consultant', 'Data Visualization'],
-        icons=['house', 'activity', 'lungs', 'heart-pulse', 'brain', 'bar-chart', 'chat'],
+        options=['Home', 'Diabetes Prediction', 'Hypertension Prediction', 'Cardiovascular Disease Prediction', 
+                 'Asthma Prediction', 'Stroke Prediction', 'Sleep Health Analysis', 'Mental-Analysis', 
+                 'Medical Consultant', 'Data Visualization'],
+        icons=['house', 'activity', 'lungs', 'heart-pulse', 'brain', 'moon', 'chat', 'bar-chart'],
         menu_icon="cast",
         default_index=0,
         styles={
@@ -74,9 +76,6 @@ with st.sidebar:
         }
     )
 
-
-# 'Checkbox-to-disease-predictor', 
-# 'Text-based Disease Prediction', 
 # Utility function to safely convert input to float
 def safe_float(value, default=0.0):
     try:
@@ -94,14 +93,15 @@ if selected == 'Home':
     This tool provides **early prediction and analysis** for various health conditions using **Machine Learning & NLP**.
     
     ### 🏥 Available Features:
-    - **✅ Checkbox-based Lifestyle Disease Predictor** using **BiomedNLP-PubMedBERT**  
-    - **🤖 AI Chatbot for Health Assistance** (Ask health-related questions)  
-    - **🧠 Mental Health Assessment**  
-    - **🩸 Disease Predictors**:
+    - **✅ Disease Predictors**:
       - Diabetes  
+      - Hypertension  
+      - Cardiovascular Disease  
       - Asthma  
       - Stroke  
-      - Cardiovascular Disease  
+    - **🌙 Sleep Health Analysis**  
+    - **🧠 Mental Health Assessment**  
+    - **🤖 AI Chatbot for Health Assistance**  
     - **📊 Data Visualizer** (Analyze trends in health conditions)  
                 
     👉 Select an option from the sidebar to proceed!  
@@ -115,23 +115,10 @@ if selected == 'Home':
         4. View personalized **health insights & recommendations**.
         """)
 
-
     # Disclaimer Section
     st.markdown("---")
-    # st.markdown("""
-    # **⚠️ Disclaimer:** This application has been developed using **real-world healthcare datasets** sourced from Kaggle:  
-
-    # - [Stroke Prediction Dataset](http://kaggle.com/code/chanchal24/stroke-prediction-using-python/input?select=healthcare-dataset-stroke-data.csv)  
-    # - [Asthma Analysis & Prediction](https://www.kaggle.com/code/bryamblasrimac/asthma-eda-prediction-f2score-85/input)  
-    # - [Diabetes Dataset](https://www.kaggle.com/datasets/mathchi/diabetes-data-set)  
-    # - [Cardiovascular Disease Dataset](https://www.kaggle.com/datasets/sulianova/cardiovascular-disease-dataset)  
-    # - [Sentiment Analysis for Mental Health](https://www.kaggle.com/datasets/suchintikasarkar/sentiment-analysis-for-mental-health)  
-    # - [Sleep Health Analysis](https://www.kaggle.com/datasets/uom190346a/sleep-health-and-lifestyle-dataset)
-    # \
-
-
     st.markdown("""
-    The predictions are generated using **machine learning models** trained on these datasets, incorporating **evaluation metrics and graphical insights** to enhance interpretability.  
+    The predictions are generated using **machine learning models** trained on real-world healthcare datasets, incorporating **evaluation metrics and graphical insights** to enhance interpretability.  
 
     However, this tool has **not undergone clinical validation** and should be used **for informational and educational purposes only**. It is not intended to serve as a substitute for professional medical diagnosis or treatment. Always consult a qualified healthcare provider for medical advice.
     """)

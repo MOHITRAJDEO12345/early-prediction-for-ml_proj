@@ -16,4 +16,5 @@ pydub
 tf-keras
 plotly
 plotly-express
-
+xgboost
+scikit-learn-extra

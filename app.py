@@ -57,13 +57,92 @@ except FileNotFoundError:
     st.error("Error: Model files not found. Please upload the model files.")
     st.stop()
 
+# with st.sidebar:
+#     st.title("🩺 Disease Prediction")
+    
+#     selected = option_menu(
+#         menu_title="Navigation",
+#         options=['Home',  'Diabetes Prediction','Hypertension Prediction', 'Cardiovascular Disease Prediction', 'Asthma Prediction', 'Sleep Health Analysis','Mental-Analysis','Medical Consultant', 'Data Visualization'],
+#         icons=['house', 'activity', 'lungs', 'heart-pulse', 'brain', 'bar-chart', 'chat'],
+#         menu_icon="cast",
+#         default_index=0,
+#         styles={
+#             "container": {"padding": "5px", "background-color": "#111111"},  # Darker background
+#             "icon": {"color": "#FF0000", "font-size": "20px"},  # Red icons
+#             "nav-link": {"font-size": "16px", "text-align": "left", "margin": "0px", "color": "#FFFFFF"},  # White text
+#             "nav-link-selected": {"background-color": "#FF0000", "color": "#FFFFFF"},
+#         }
+#     )
+
+# 'Stroke Prediction',
+# 'Checkbox-to-disease-predictor', 
+# 'Text-based Disease Prediction', 
+# Utility function to safely convert input to float
+# def safe_float(value, default=0.0):
+#     try:
+#         return float(value)
+#     except ValueError:
+#         return default  # Assigns default value if conversion fails
+
+
+# 🚀 Home Page
+# if selected == 'Home':
+#     st.title("🩺 Early Prediction of Health & Lifestyle Diseases")
+
+#     st.markdown("""
+#     ## Welcome to the **Early Prediction of Health & Lifestyle Diseases**!  
+#     This tool provides **early prediction and analysis** for various health conditions using **Machine Learning & NLP**.
+    
+#     ### 🏥 Available Features:
+#     - **✅ Checkbox-based Lifestyle Disease Predictor** using **BiomedNLP-PubMedBERT**  
+#     - **🤖 AI Chatbot for Health Assistance** (Ask health-related questions)  
+#     - **🧠 Mental Health Assessment**  
+#     - **🩸 Disease Predictors**:
+#       - Diabetes  
+#       - Asthma  
+#       - Stroke  
+#       - Cardiovascular Disease  
+#     - **📊 Data Visualizer** (Analyze trends in health conditions)  
+                
+#     👉 Select an option from the sidebar to proceed!  
+#     """)
+
+#     with st.expander("🚀 Quick Start Guide"):
+#         st.write("""
+#         1. Select a **health prediction model** from the sidebar.
+#         2. Enter your details in the input fields.
+#         3. Click **Predict** to get your result.
+#         4. View personalized **health insights & recommendations**.
+#         """)
+
+
+#     # Disclaimer Section
+#     st.markdown("---")
+#     # st.markdown("""
+#     # **⚠️ Disclaimer:** This application has been developed using **real-world healthcare datasets** sourced from Kaggle:  
+
+#     # - [Stroke Prediction Dataset](http://kaggle.com/code/chanchal24/stroke-prediction-using-python/input?select=healthcare-dataset-stroke-data.csv)  
+#     # - [Asthma Analysis & Prediction](https://www.kaggle.com/code/bryamblasrimac/asthma-eda-prediction-f2score-85/input)  
+#     # - [Diabetes Dataset](https://www.kaggle.com/datasets/mathchi/diabetes-data-set)  
+#     # - [Cardiovascular Disease Dataset](https://www.kaggle.com/datasets/sulianova/cardiovascular-disease-dataset)  
+#     # - [Sentiment Analysis for Mental Health](https://www.kaggle.com/datasets/suchintikasarkar/sentiment-analysis-for-mental-health)  
+#     # - [Sleep Health Analysis](https://www.kaggle.com/datasets/uom190346a/sleep-health-and-lifestyle-dataset)
+#     # \
+
+
+#     st.markdown("""
+#     The predictions are generated using **machine learning models** trained on these datasets, incorporating **evaluation metrics and graphical insights** to enhance interpretability.  
+
+#     However, this tool has **not undergone clinical validation** and should be used **for informational and educational purposes only**. It is not intended to serve as a substitute for professional medical diagnosis or treatment. Always consult a qualified healthcare provider for medical advice.
+#     """)
+
 with st.sidebar:
     st.title("🩺 Disease Prediction")
     
     selected = option_menu(
         menu_title="Navigation",
         options=['Home', 'Diabetes Prediction', 'Hypertension Prediction', 'Cardiovascular Disease Prediction', 
-                 'Asthma Prediction', 'Stroke Prediction', 'Sleep Health Analysis', 'Mental-Analysis', 
+                 'Asthma Prediction',  'Sleep Health Analysis', 'Mental-Analysis', 
                  'Medical Consultant', 'Data Visualization'],
         icons=['house', 'activity', 'lungs', 'heart-pulse', 'brain', 'moon', 'chat', 'bar-chart'],
         menu_icon="cast",
@@ -75,7 +154,7 @@ with st.sidebar:
             "nav-link-selected": {"background-color": "#FF0000", "color": "#FFFFFF"},
         }
     )
-
+# 'Stroke Prediction',
 # Utility function to safely convert input to float
 def safe_float(value, default=0.0):
     try:
@@ -98,7 +177,7 @@ if selected == 'Home':
       - Hypertension  
       - Cardiovascular Disease  
       - Asthma  
-      - Stroke  
+    #   - Stroke  
     - **🌙 Sleep Health Analysis**  
     - **🧠 Mental Health Assessment**  
     - **🤖 AI Chatbot for Health Assistance**  
@@ -122,7 +201,6 @@ if selected == 'Home':
 
     However, this tool has **not undergone clinical validation** and should be used **for informational and educational purposes only**. It is not intended to serve as a substitute for professional medical diagnosis or treatment. Always consult a qualified healthcare provider for medical advice.
     """)
-
 
 if selected == 'Diabetes Prediction':
     st.title('🩸 Diabetes Prediction using ML (SVC)')

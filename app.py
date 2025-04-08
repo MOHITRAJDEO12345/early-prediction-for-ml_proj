@@ -26,7 +26,7 @@ cardio_model = pickle.load(open('cardio_vascular/xgboost_cardiovascular_model.pk
 
 # stroke_model = pickle.load(open('stroke/stroke_model.sav', 'rb'))
 
-stroke_model = joblib.load("stroke/finalized_model.pkl")
+# stroke_model = joblib.load("stroke/finalized_model.pkl")
 
 prep_asthama = pickle.load(open('asthama/preprocessor.pkl', 'rb'))
 

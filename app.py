@@ -26,7 +26,7 @@ cardio_model = pickle.load(open('cardio_vascular/xgboost_cardiovascular_model.pk
 
 # stroke_model = pickle.load(open('stroke/stroke_model.sav', 'rb'))
 
-# stroke_model = joblib.load("stroke/finalized_model.pkl")
+stroke_model = joblib.load("stroke/finalized_model.pkl")
 
 prep_asthama = pickle.load(open('asthama/preprocessor.pkl', 'rb'))
 
@@ -142,7 +142,7 @@ with st.sidebar:
     selected = option_menu(
         menu_title="Navigation",
         options=['Home', 'Diabetes Prediction', 'Hypertension Prediction', 'Cardiovascular Disease Prediction', 
-                 'Asthma Prediction',  'Sleep Health Analysis', 'Mental-Analysis', 
+                 'Asthma Prediction','Stroke Prediction',  'Sleep Health Analysis', 'Mental-Analysis', 
                  'Medical Consultant', 'Data Visualization'],
         icons=['house', 'activity', 'lungs', 'heart-pulse', 'brain', 'moon', 'chat', 'bar-chart'],
         menu_icon="cast",
@@ -154,7 +154,7 @@ with st.sidebar:
             "nav-link-selected": {"background-color": "#FF0000", "color": "#FFFFFF"},
         }
     )
-# 'Stroke Prediction',
+
 # Utility function to safely convert input to float
 def safe_float(value, default=0.0):
     try:
@@ -178,7 +178,7 @@ if selected == 'Home':
       - Cardiovascular Disease  
       - Asthma  
       - Stroke  
-    # - **🌙 Sleep Health Analysis**  
+    - **🌙 Sleep Health Analysis**  
     - **🧠 Mental Health Assessment**  
     - **🤖 AI Chatbot for Health Assistance**  
     - **📊 Data Visualizer** (Analyze trends in health conditions)  
@@ -521,98 +521,195 @@ if selected == 'Data Visualization':
 if selected == 'Medical Consultant':
     st.title("🩺 Medical Consultant Chatbot")
     st.markdown("### Discuss Your Health Concerns with Our AI-powered Chatbot")
-    st.write("Ask about **Diabetes, Asthma, Stroke, Cardiovascular Disease, or Mental Health.**")
+    st.write("Our AI can help with **medical questions, symptom analysis, and health recommendations**.")
+    
+    # Initialize API
+    genai.configure(api_key="AIzaSyAcXexC7cNXrRTCYj6Dg7ZFYVQZH8a5PMw")  # Replace with your actual API key
 
-    genai.configure(api_key="AIzaSyAwyi9c5OdvLoWrv5lFi1jZDEYwuprQAKE")
-
-    # Custom Styling
+    # Custom Styling for suggestions
     st.markdown("""
         <style>
             .prompt-box { 
-                background-color: #000000; 
+                background-color: #222222; 
                 padding: 12px; 
                 border-radius: 8px; 
                 font-size: 14px; 
                 font-family: sans-serif;
                 margin-bottom: 10px;
-                border: 1px solid #dee2e6;
+                border: 1px solid #444444;
                 text-align: center;
+                cursor: pointer;
+            }
+            .prompt-box:hover {
+                background-color: #333333;
             }
         </style>
     """, unsafe_allow_html=True)
-
-    st.markdown("#### 💡 Common Health Queries")
-
+    
+    # Common medical questions as suggestions
+    st.markdown("#### 💡 Common Health Questions")
+    
     prompt_options = [
-        ("Diabetes – Diet", "What foods should I eat if I have diabetes?"),
-        ("Diabetes – Exercise", "What type of workouts help control blood sugar levels?"),
-        ("Asthma – Triggers", "What are common asthma triggers?"),
-        ("Asthma – Treatment", "What are the best medications for asthma?"),
-        ("Stroke – Symptoms", "What are the early warning signs of a stroke?"),
-        ("Stroke – Prevention", "How can I reduce my risk of stroke?"),
-        ("Cardiovascular – Heart Health", "How can I reduce my risk of heart disease?"),
-        ("Cardiovascular – Blood Pressure", "What lifestyle changes can lower high blood pressure?"),
-        ("Mental Health – Stress Management", "How can I manage stress effectively?"),
-        ("Mental Health – Sleep Disorders", "What are the causes and treatments for sleep disorders?")
+        ("Diabetes", "What are early warning signs of diabetes?"),
+        ("Hypertension", "How can I manage my blood pressure naturally?"),
+        ("Heart Health", "What lifestyle changes help reduce cardiovascular risk?"),
+        ("Asthma", "What triggers asthma attacks and how can I prevent them?"),
+        ("Stroke", "What are the warning signs of a stroke?"),
+        ("Sleep Health", "How does poor sleep affect my overall health?"),
+        ("Mental Health", "What are common symptoms of anxiety?"),
+        ("Preventive Care", "What preventive screenings should I get at my age?"),
+        ("Exercise", "How much exercise do I need for good health?"),
+        ("Nutrition", "What diet changes can improve my heart health?")
     ]
-
-    # Display prompts in two columns (2 prompts per row)
+    
+    # Display prompts in two columns
     cols = st.columns(2)
     for i in range(0, len(prompt_options), 2):
         with cols[0]: 
             if i < len(prompt_options):
                 label, prompt = prompt_options[i]
-                st.markdown(f"""<div class="prompt-box"><strong>{label}</strong><br>{prompt}</div>""", unsafe_allow_html=True)
-
+                st.markdown(f"""<div class="prompt-box" onclick="document.querySelector('#medical-chat-input').value='{prompt}';"><strong>{label}</strong><br>{prompt}</div>""", unsafe_allow_html=True)
+        
         with cols[1]: 
             if i+1 < len(prompt_options):
                 label, prompt = prompt_options[i+1]
-                st.markdown(f"""<div class="prompt-box"><strong>{label}</strong><br>{prompt}</div>""", unsafe_allow_html=True)
-
+                st.markdown(f"""<div class="prompt-box" onclick="document.querySelector('#medical-chat-input').value='{prompt}';"><strong>{label}</strong><br>{prompt}</div>""", unsafe_allow_html=True)
+    
     # Initialize chat history if not present
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = []
+    if "medical_chat_history" not in st.session_state:
+        st.session_state.medical_chat_history = []
+        # Add welcome message
+        welcome_msg = {
+            "role": "assistant", 
+            "content": """👋 Welcome to your Medical Consultant! I can help answer questions about:
 
-    # Display previous chat history
-    for message in st.session_state.chat_history:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
-
+- Health concerns and symptoms
+- Disease prevention and management
+- Lifestyle recommendations
+- Understanding medical conditions
+            
+How can I assist with your health questions today?"""
+        }
+        st.session_state.medical_chat_history.append(welcome_msg)
+    
+    # Chat container
+    chat_container = st.container()
+    with chat_container:
+        # Display previous chat history
+        for message in st.session_state.medical_chat_history:
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
+    
     # User input field
-    user_prompt = st.chat_input("Ask about Diabetes, Asthma, Stroke, Cardiovascular Disease, or Mental Health...")
-
-    # List of allowed topics
-    allowed_keywords = ["diabetes", "asthma", "stroke", "cardiovascular", "heart", "blood pressure", 
-                        "mental health", "depression", "stress", "cholesterol", "sleep disorders"]
-
+    user_prompt = st.chat_input("Ask about health concerns, symptoms, or lifestyle questions...", key="medical-chat-input")
+    
+    # Define medical topics for feature recommendations
+    medical_topics = {
+        "diabetes": "Diabetes Prediction",
+        "blood sugar": "Diabetes Prediction",
+        "hypertension": "Hypertension Prediction",
+        "blood pressure": "Hypertension Prediction", 
+        "heart": "Cardiovascular Disease Prediction",
+        "cardiovascular": "Cardiovascular Disease Prediction",
+        "asthma": "Asthma Prediction",
+        "breathing": "Asthma Prediction",
+        "stroke": "Stroke Prediction",
+        "sleep": "Sleep Health Analysis",
+        "insomnia": "Sleep Health Analysis",
+        "mental health": "Mental-Analysis",
+        "depression": "Mental-Analysis",
+        "anxiety": "Mental-Analysis",
+        "stress": "Mental-Analysis"
+    }
+    
     if user_prompt:
-        # Display user message
-        st.chat_message("user").markdown(user_prompt)
-        st.session_state.chat_history.append({"role": "user", "content": user_prompt})
+        # Add user message to chat
+        st.session_state.medical_chat_history.append({"role": "user", "content": user_prompt})
+        
+        # Display user message in chat
+        with st.chat_message("user"):
+            st.markdown(user_prompt)
+        
+        try:
+            # Create system instruction
+            system_instruction = """You are a medical consultant chatbot designed to provide helpful health information.
+            
+RULES:
+- Provide accurate, concise medical information based on current scientific understanding
+- Answer questions about symptoms, diseases, prevention, and health management
+- Keep responses informative but brief (under 150 words)
+- When uncertain, acknowledge limitations and recommend consulting a healthcare professional
+- Avoid making definitive diagnoses or treatment recommendations
+- Never claim to be an AI or language model - respond directly as a medical consultant
+- Always clarify that your advice is informational and not a substitute for professional medical care
+- When describing medical conditions, focus on factual information about symptoms, risk factors, and prevention
+- Maintain a professional, empathetic tone
+- If the user mentions specific symptoms, acknowledge them and provide information about possible causes
+- Respond in a doctor-like manner when assessing symptoms or risk factors
+- Use your knowledge to identify if the user's query relates to any specific medical conditions
+- Do not suggest our prediction tools in every response - only when truly relevant
 
-        # Restriction: Only process if related to health topics
-        if any(keyword in user_prompt.lower() for keyword in allowed_keywords):
+The user is interacting with a health prediction platform that offers the following tools:
+- Diabetes Prediction
+- Hypertension Prediction 
+- Cardiovascular Disease Prediction
+- Asthma Prediction
+- Stroke Prediction
+- Sleep Health Analysis
+- Mental Health Analysis
+
+TASK: First, determine if the user's query contains symptoms or mentions specific health conditions. If so, provide a doctor-like assessment. Only if appropriate, subtly suggest one of our health prediction tools at the end of your response.
+"""
+
+            # Generate a response using Gemini
             model = genai.GenerativeModel("gemini-2.0-flash")
-            response = model.generate_content(user_prompt)
+            
+            # Prepare chat context
+            chat_context = []
+            for msg in st.session_state.medical_chat_history[-5:]:  # Last 5 messages for context
+                if msg["role"] == "user":
+                    chat_context.append(f"User: {msg['content']}")
+                else:
+                    chat_context.append(f"Medical Consultant: {msg['content']}")
+            
+            # Add current query with additional analysis request
+            full_prompt = f"""{system_instruction}
 
+CONVERSATION HISTORY:
+{chr(10).join(chat_context)}
+
+USER QUERY: {user_prompt}
+
+ANALYSIS INSTRUCTIONS:
+1. First, determine if this query relates to any specific health conditions or symptoms
+2. Provide a helpful medical response addressing the user's concerns
+3. If appropriate, subtly suggest one relevant prediction tool at the end of your response (only if truly related)
+4. Remember to be professional and avoid making definitive diagnoses
+"""
+            
+            # Generate response
+            response = model.generate_content(full_prompt)
+            
             if response and hasattr(response, "text"):
                 assistant_response = response.text
             else:
-                assistant_response = "I'm sorry, I couldn't generate a response."
-
-            st.session_state.chat_history.append({"role": "assistant", "content": assistant_response})
-
-            # Display assistant's response
-            with st.chat_message("assistant"):
-                st.markdown(assistant_response)
-        else:
-            # Restriction message
-            restriction_msg = "**⚠️ This chatbot only responds to health-related topics.**\nPlease ask about Diabetes, Asthma, Stroke, Cardiovascular Disease, or Mental Health."
-            st.session_state.chat_history.append({"role": "assistant", "content": restriction_msg})
+                assistant_response = "I'm sorry, I couldn't generate a response. Please try asking a different health-related question."
+            
+            # Save and display response
+            st.session_state.medical_chat_history.append({"role": "assistant", "content": assistant_response})
             
             with st.chat_message("assistant"):
-                st.markdown(restriction_msg)
-
+                st.markdown(assistant_response)
+            
+        except Exception as e:
+            error_msg = f"I apologize, but I'm having trouble processing your request right now. Please try again with a different question."
+            st.session_state.medical_chat_history.append({"role": "assistant", "content": error_msg})
+            
+            with st.chat_message("assistant"):
+                st.markdown(error_msg)
+        
+        # Force refresh to update the chat
+        st.rerun()
 
 # if selected == 'Checkbox-to-disease-predictor':
 # # Load transformer model

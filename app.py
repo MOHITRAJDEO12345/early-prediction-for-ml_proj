@@ -177,8 +177,8 @@ if selected == 'Home':
       - Hypertension  
       - Cardiovascular Disease  
       - Asthma  
-    #   - Stroke  
-    - **🌙 Sleep Health Analysis**  
+      - Stroke  
+    # - **🌙 Sleep Health Analysis**  
     - **🧠 Mental Health Assessment**  
     - **🤖 AI Chatbot for Health Assistance**  
     - **📊 Data Visualizer** (Analyze trends in health conditions)  

@@ -1,11 +1,11 @@
 <!-- # 🩺 AI-Powered Health & Lifestyle Disease Prediction
-https://huggingface.co/spaces/KingArthur111/early-prediction-for-ml_proj
+
 Welcome to the **AI-Powered Health Prediction System**! 🚀
 
 This tool provides **early prediction and analysis** for various health conditions using **Machine Learning & NLP**. It is designed to assist users in understanding potential health risks based on their lifestyle and symptoms.
 
 ---
-
+https://huggingface.co/spaces/KingArthur111/early-prediction-for-ml_proj
 ## 🏥 Available Features:
 
 ✅ **Lifestyle Disease Predictor** (Checkbox-based system using BiomedNLP-PubMedBERT)
